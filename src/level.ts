@@ -1,15 +1,39 @@
 import { DefaultLoader, Engine, ExcaliburGraphicsContext, Scene, SceneActivationContext } from "excalibur";
 import { Player } from "./player";
+import { Resources } from "./resources"
+import { resourcesLoader } from "./utils/resourceLoader";
 
 export class MyLevel extends Scene {
+
+    resources: any;
+
+    constructor(resources: object) {
+        super();
+        this.resources = resources;
+    }
+
+
+
     override onInitialize(engine: Engine): void {
         // Scene.onInitialize is where we recommend you perform the composition for your game
+
+        //const doorsLayer = Resources.TestMap.getObjectLayers("Doors")[0];
+
+        // for (let obj of doorsLayer.objects) {
+        //     console.log(obj);
+        // }
+
+        this.resources.TestMap.addToScene(this)
+
         const player = new Player();
+        player.z = 42
         this.add(player); // Actors need to be added to a scene to be drawn
+        this.camera.strategy.lockToActor(player);
+        this.camera.zoom = 2.1
     }
 
     override onPreLoad(loader: DefaultLoader): void {
-        // Add any scene specific resources to load
+        resourcesLoader(this.resources, loader);
     }
 
     override onActivate(context: SceneActivationContext<unknown>): void {
