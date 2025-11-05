@@ -1,6 +1,9 @@
 import { DisplayMode, Engine, vec } from "excalibur";
-import { loader } from "./resources";
+import { loader, Resources } from "./resources";
 import World from "./scenes/World";
+import TestInterior from "./scenes/TestInterior";
+import { Player } from "./objects/player";
+import { UIKey } from "./objects/UIKey";
 
 // Goal is to keep main.ts small and just enough to configure the engine
 
@@ -9,21 +12,15 @@ const game = new Engine({
 	height: 600,
 	displayMode: DisplayMode.FitScreenAndFill, // Display mode tells excalibur how to fill the window
 	pixelArt: true, // pixelArt will turn on the correct settings to render pixel art without jaggies or shimmering artifacts
-	// scenes: {
-	// 	start: MyLevel
-	// }
 });
 
-// game.start('start', { // name of the start scene 'start'
-// 	loader
-// }).then(() => {
-// 	game.add("scene1", new World())
-// 	game.goToScene("scene1")
-// 	//Resources.TestMap.addToScene(game.currentScene, {pos: vec(0, 0)});
-// 	game.screen.canvas.style.imageRendering = "pixelated";
-// });	
-
 game.start(loader).then(() => {
-	game.add("world", new World())
+	const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg)
+	
+    const player = new Player(enterKey);
+    player.z = 42
+
+	game.add("world", new World(player))
+	game.add("testInterior", new TestInterior(player))
 	game.goToScene("world")
 })

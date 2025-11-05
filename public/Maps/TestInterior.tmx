@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="3">
+ <tileset firstgid="1" name="InteriorOffice" tilewidth="16" tileheight="16" tilecount="848" columns="16">
+  <image source="../Tilesets/Modern_Office_16x16.png" width="256" height="848"/>
+ </tileset>
+ <layer id="1" name="Ground" width="10" height="10">
+  <data encoding="csv">
+0,75,75,75,75,75,75,75,75,75,
+75,75,75,75,75,75,75,75,75,75,
+75,75,75,75,75,75,75,75,75,75,
+75,75,75,75,75,75,75,75,75,75,
+75,75,75,75,75,75,75,75,75,75,
+75,75,75,75,75,75,75,75,75,75,
+75,75,75,75,75,75,75,75,75,75,
+75,75,75,75,75,75,75,75,75,75,
+75,75,75,75,0,0,75,75,75,75,
+75,75,75,75,0,0,75,75,75,75
+</data>
+ </layer>
+ <layer id="4" name="Doors" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,92,92,0,0,0,0,
+0,0,0,0,92,92,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="2" name="DoorObjects">
+  <object id="1" name="Test Exit Door" type="world" x="64" y="128" width="32" height="32">
+   <properties>
+    <property name="DirectionFacingOnExit" value="down"/>
+    <property name="XOnExit" type="int" value="15"/>
+    <property name="YOnExit" type="int" value="11"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer id="3" name="Collisions" width="10" height="10">
+  <properties>
+   <property name="solid" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,324,325,0,0,0,0,275,276,277,
+339,340,341,0,0,0,0,291,292,293,
+355,356,357,0,0,0,0,307,308,309,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

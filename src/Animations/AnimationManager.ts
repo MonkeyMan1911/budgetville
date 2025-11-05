@@ -1,15 +1,6 @@
 import * as ex from "excalibur";
 import rawData from './animations.json' assert { type: "json" };
 
-// Make a class called AnimationManager that handles animations for a given actor
-// Takes following paramaters - spritesheet, actor
-// Has following class variables - currentAnimation, animations
-/* Has following methods:      
-    - play(animationName): plays an animation
-    - end(): ends current animation
-    - addAnimation(animations:  Array)
-*/
-
 interface AnimationManagerConfig {
     spritesheet: ex.SpriteSheet;
     actor: ex.Actor;

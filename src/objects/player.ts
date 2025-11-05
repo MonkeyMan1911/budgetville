@@ -1,7 +1,9 @@
 import { Actor, Collider, CollisionContact, Engine, Side, vec, Keys, Vector, CollisionType } from "excalibur";
 import * as ex from "excalibur"
-import { Resources } from "./resources";
-import { AnimationManager } from "./Animations/AnimationManager";
+import { Resources } from "../resources";
+import { AnimationManager } from "../Animations/AnimationManager";
+import DoorObject from "./DoorObject";
+import { UIKey } from "./UIKey";
 
 export enum Directions {
 	Up = "up",
@@ -33,14 +35,22 @@ export class Player extends Actor {
 		actor: this
 	})
 
-	constructor() {
+	private collidingWithDoor: boolean = false;
+	private currentDoor: DoorObject | null = null;
+
+	public enterKey: UIKey;
+	private enterKeyShown: boolean = false;
+
+	constructor(enterKey: UIKey) {
 		super({
 			name: 'Player',
-			pos: vec(8, 0),
+			pos: vec(192, 192),
 			width: 16,
 			height: 16,
 			collisionType: CollisionType.Active, // Collision Type Active means this participates in collisions read more https://excaliburjs.com/docs/collisiontypes
 		});
+
+		this.enterKey = enterKey
 		
 	}
 
@@ -52,7 +62,7 @@ export class Player extends Actor {
 		const keyboard = engine.input.keyboard
 
 		let moveDir: Vector = Vector.Zero
-		let speed: number = 1.2
+		let speed: number = 1.3
 
 		const ignoredKeys: Keys[] = [Keys.ShiftLeft, Keys.ShiftRight]
 
@@ -62,19 +72,19 @@ export class Player extends Actor {
 			this.animationManager.goToIdle(this.direction);
 			return;
 		}
-		if (keyboard.isHeld(Keys.Down) || keyboard.isHeld(Keys.S)) {
+		else if (keyboard.isHeld(Keys.Down) || keyboard.isHeld(Keys.S)) {
 			this.direction = Directions.Down
 			moveDir = moveDir.add(Vector.Down)
 		}
-		if (keyboard.isHeld(Keys.Up) || keyboard.isHeld(Keys.W)) {
+		else if (keyboard.isHeld(Keys.Up) || keyboard.isHeld(Keys.W)) {
 			this.direction = Directions.Up
 			moveDir = moveDir.add(Vector.Up)
 		}
-		if (keyboard.isHeld(Keys.Right) || keyboard.isHeld(Keys.D)) {
+		else if (keyboard.isHeld(Keys.Right) || keyboard.isHeld(Keys.D)) {
 			this.direction = Directions.Right
 			moveDir = moveDir.add(Vector.Right)
 		}
-		if (keyboard.isHeld(Keys.Left) || keyboard.isHeld(Keys.A)) {
+		else if (keyboard.isHeld(Keys.Left) || keyboard.isHeld(Keys.A)) {
 			this.direction = Directions.Left
 			moveDir = moveDir.add(Vector.Left)
 		}
@@ -95,7 +105,6 @@ export class Player extends Actor {
 					newPos.y += moveDir.y;
 					this.pos.y = newPos.y;
 				}
-				//this.pos = this.pos.add(moveDir);
 
 				this.movementState = MovementStates.Walk
 				this.animationManager.play(`walk-${this.direction}`)
@@ -108,10 +117,34 @@ export class Player extends Actor {
 		}
 	}
 
+	private async enterLogic(engine: Engine) {
+		const keyboard = engine.input.keyboard
+
+		if (keyboard.wasPressed(Keys.Enter)) {
+			const targetScene = this.currentDoor?.leadsTo;
+			const newDirection = this.currentDoor?.properties![0].value as Directions;
+			const newX = (this.currentDoor?.properties?.[1]?.value as number ?? 0) * 16 + 8;
+			const newY = (this.currentDoor?.properties?.[2]?.value as number ?? 0) * 16;
+
+			// Now change the scene
+			await engine.goToScene(targetScene);
+			this.enterKey.hide()
+
+			// Update player state
+			this.movementState = MovementStates.Idle;
+			this.direction = newDirection;
+			this.animationManager.goToIdle(this.direction);
+			this.pos = vec(newX, newY);
+		}
+	}
+
 	override onPreUpdate(engine: Engine, elapsedMs: number): void {
 		// Only allow movement if no high-priority animation is playing
 		if (this.animationManager.currentAnimationPriority < 10) {
 			this.movementLogic(engine);
+		}
+		if (this.collidingWithDoor) {
+			this.enterLogic(engine);
 		}
 	}
 
@@ -120,7 +153,16 @@ export class Player extends Actor {
 	}
 
 	override onPreCollisionResolve(self: Collider, other: Collider, side: Side, contact: CollisionContact): void {
-		// Called before a collision is resolved, if you want to opt out of this specific collision call contact.cancel()				
+		// Called before a collision is resolved, if you want to opt out of this specific collision call contact.cancel()		
+		if (other.owner instanceof DoorObject) {
+			this.collidingWithDoor = true
+			this.currentDoor = other.owner
+			if (!this.enterKeyShown) {
+				this.enterKey.setPos(ex.vec(other.owner.pos.x + (other.owner.width / 2), other.owner.pos.y - 20))
+				this.enterKey.show()
+				this.enterKeyShown = true
+			}
+		}	
 	}
 
 	override onPostCollisionResolve(self: Collider, other: Collider, side: Side, contact: CollisionContact): void {
@@ -133,5 +175,11 @@ export class Player extends Actor {
 
 	override onCollisionEnd(self: Collider, other: Collider, side: Side, lastContact: CollisionContact): void {
 		// Called when a pair of objects separates
+		if (other.owner instanceof DoorObject) {
+			this.collidingWithDoor = false
+			this.currentDoor = null
+			this.enterKey.hide()
+			this.enterKeyShown = false
+		}	
 	}
 }

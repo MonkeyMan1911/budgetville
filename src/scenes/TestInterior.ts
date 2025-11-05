@@ -1,14 +1,21 @@
+import { BoundingBox, Engine } from 'excalibur';
 import { Player } from '../objects/player';
 import { GameScene } from './GameScene';
 import { TiledResource } from '@excaliburjs/plugin-tiled';
 
-class World extends GameScene {
+class TestInterior extends GameScene {
     constructor(player: Player) {
         const resources = {
             // TODO Consider changing the tile map to a string and move the new TiledMapResource into the GameScene?
-            TiledMap: new TiledResource("./Maps/ExteriorsSet.tmx"),
+            TiledMap: new TiledResource("./Maps/TestInterior.tmx"),
         };
         super(resources, player);
+    }
+
+    override onInitialize(engine: Engine): void {
+        super.onInitialize(engine)
+
+        this.camera.strategy.limitCameraBounds(new BoundingBox(0, 0, 144, 144))
     }
 
     /**
@@ -32,4 +39,4 @@ class World extends GameScene {
     // }
 }
 
-export default World;
+export default TestInterior;

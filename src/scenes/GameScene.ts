@@ -1,14 +1,26 @@
 import { DefaultLoader, Engine, ExcaliburGraphicsContext, Scene, SceneActivationContext } from "excalibur";
-import { Player } from "../player";
+import * as ex from "excalibur"
+import { Player } from "../objects/player";
 import { resourcesLoader } from "../utils/resourceLoader";
+import DoorObject from "../objects/DoorObject";
+import { TiledResource } from "@excaliburjs/plugin-tiled";
+import { UIKey } from "../objects/UIKey";
+import { Resources } from "../resources";
+
+
+export interface GameSceneResources {
+    TiledMap: TiledResource
+}
 
 export class GameScene extends Scene {
 
-    resources: any;
+    resources: GameSceneResources;
+    player: Player;
 
-    constructor(resources: object) {
+    constructor(resources: GameSceneResources, player: Player) {
         super();
         this.resources = resources;
+        this.player = player
     }
     
     override onPreLoad(loader: DefaultLoader): void {
@@ -16,21 +28,21 @@ export class GameScene extends Scene {
     }
 
     override onInitialize(engine: Engine): void {
-        // const doorsLayer = this.resources.TestMap.getObjectLayers("Doors")[0];
-        // console.log(doorsLayer)
 
+        // Add door objects to the scene
+        const doorsLayer = this.resources.TiledMap.getObjectLayers("DoorObjects")[0].objects;    
+        for (let doorObj of doorsLayer) {
+            const door = new DoorObject(doorObj.tiledObject)
+            this.add(door)
+        }
 
-        // for (let obj of doorsLayer.objects) {
-        //     console.log(obj);
-        // }
-
-        this.resources.TiledMap.addToScene(this)
-
-        const player = new Player();
-        player.z = 42
-        this.add(player); // Actors need to be added to a scene to be drawn
-        this.camera.strategy.lockToActor(player);
+        this.add(this.player);
+        this.camera.strategy.lockToActor(this.player)
         this.camera.zoom = 2.1
+
+        this.add(this.player.enterKey)
+
+       this.resources.TiledMap.addToScene(engine.currentScene, {pos: ex.vec(0, 0)})
     }
 
     override onActivate(context: SceneActivationContext<unknown>): void {
