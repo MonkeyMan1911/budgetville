@@ -4,8 +4,6 @@ import { Player } from "../objects/player";
 import { resourcesLoader } from "../utils/resourceLoader";
 import DoorObject from "../objects/DoorObject";
 import { TiledResource } from "@excaliburjs/plugin-tiled";
-import { UIKey } from "../objects/UIKey";
-import { Resources } from "../resources";
 
 
 export interface GameSceneResources {
