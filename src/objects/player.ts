@@ -4,6 +4,7 @@ import { Resources } from "../resources";
 import { AnimationManager } from "../Animations/AnimationManager";
 import DoorObject from "./DoorObject";
 import { UIKey } from "./UIKey";
+import { NPC } from "./NPC";
 
 export enum Directions {
 	Up = "up",
@@ -11,7 +12,7 @@ export enum Directions {
 	Left = "left",
 	Right = "right",
 }
-enum MovementStates {
+export enum MovementStates {
 	Idle = "idle",
 	Walk = "walk",
 	Hold = "hold"
@@ -40,8 +41,13 @@ export class Player extends Actor {
 
 	public enterKey: UIKey;
 	private enterKeyShown: boolean = false;
+	public eKey: UIKey;
+	private eKeyShown: boolean = false;
 
-	constructor(enterKey: UIKey) {
+	private collidingWithNpc: boolean = false;
+	private currentNpc: NPC | null = null;
+
+	constructor(enterKey: UIKey, eKey: UIKey) {
 		super({
 			name: 'Player',
 			pos: vec(192, 192),
@@ -51,7 +57,7 @@ export class Player extends Actor {
 		});
 
 		this.enterKey = enterKey
-		
+		this.eKey = eKey
 	}
 
 	override onInitialize() {
@@ -117,10 +123,10 @@ export class Player extends Actor {
 		}
 	}
 
-	private async enterLogic(engine: Engine) {
+	private async enterLogic(engine: Engine, other?: "door" | "npc") {
 		const keyboard = engine.input.keyboard
 
-		if (keyboard.wasPressed(Keys.Enter)) {
+		if (keyboard.wasPressed(Keys.Enter) && other == "door") {
 			const targetScene = this.currentDoor?.leadsTo;
 			const newDirection = this.currentDoor?.properties![0].value as Directions;
 			const newX = (this.currentDoor?.properties?.[1]?.value as number ?? 0) * 16 + 8;
@@ -136,6 +142,10 @@ export class Player extends Actor {
 			this.animationManager.goToIdle(this.direction);
 			this.pos = vec(newX, newY);
 		}
+
+		if (keyboard.wasPressed(Keys.E) && other == "npc") {
+			this.currentNpc?.talk()
+		}
 	}
 
 	override onPreUpdate(engine: Engine, elapsedMs: number): void {
@@ -144,7 +154,10 @@ export class Player extends Actor {
 			this.movementLogic(engine);
 		}
 		if (this.collidingWithDoor) {
-			this.enterLogic(engine);
+			this.enterLogic(engine, "door");
+		}
+		if (this.collidingWithNpc) {
+			this.enterLogic(engine, "npc")
 		}
 	}
 
@@ -163,6 +176,17 @@ export class Player extends Actor {
 				this.enterKeyShown = true
 			}
 		}	
+
+		if (other.owner instanceof NPC || other.owner?.parent instanceof NPC) {
+			this.collidingWithNpc = true
+			const otherNpc = other.owner instanceof NPC ? other.owner : other.owner.parent as NPC
+			this.currentNpc = otherNpc
+			if (!this.eKeyShown) {
+				this.eKey.setPos(ex.vec(otherNpc.pos.x , otherNpc.pos.y - 15))
+				this.eKey.show()
+				this.eKeyShown = true
+			}
+		}
 	}
 
 	override onPostCollisionResolve(self: Collider, other: Collider, side: Side, contact: CollisionContact): void {
@@ -181,5 +205,12 @@ export class Player extends Actor {
 			this.enterKey.hide()
 			this.enterKeyShown = false
 		}	
+
+		if (other.owner instanceof NPC || other.owner?.parent instanceof NPC) {
+			this.collidingWithNpc = false
+			this.currentNpc = null
+			this.eKey.hide()
+			this.eKeyShown = false
+		}
 	}
 }

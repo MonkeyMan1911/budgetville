@@ -10,7 +10,7 @@ export class UIKey extends ex.Actor {
             name: name,
             pos: pos,
             height: keyImg.height / 2 ,
-            width: keyImg.width / 2,
+            width: keyImg.width,
             visible: false,
             z: 41
         })
@@ -20,8 +20,8 @@ export class UIKey extends ex.Actor {
             grid: {
                 rows: 2,
                 columns: 1,
-                spriteHeight: 12,
-                spriteWidth: 28
+                spriteHeight: this.height,
+                spriteWidth: this.width
             }
         })
 

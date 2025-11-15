@@ -8,6 +8,7 @@ import { UIKey } from "./objects/UIKey";
 // Goal is to keep main.ts small and just enough to configure the engine
 
 const game = new Engine({
+	canvasElementId: "game",
 	width: 800, // Logical width and height in game pixels
 	height: 600,
 	displayMode: DisplayMode.FitScreenAndFill, // Display mode tells excalibur how to fill the window
@@ -16,8 +17,8 @@ const game = new Engine({
 
 game.start(loader).then(() => {
 	const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg)
-	
-    const player = new Player(enterKey);
+	const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg)
+    const player = new Player(enterKey, eKey);
     player.z = 42
 
 	game.add("world", new World(player))

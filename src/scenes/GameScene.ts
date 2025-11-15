@@ -4,21 +4,26 @@ import { Player } from "../objects/player";
 import { resourcesLoader } from "../utils/resourceLoader";
 import DoorObject from "../objects/DoorObject";
 import { TiledResource } from "@excaliburjs/plugin-tiled";
+import { NPC, NPCConfig } from "../objects/NPC";
+import { SpriteSheetRes } from "../resources";
+import { NPCData } from "../objects/NPCData";
 
 
 export interface GameSceneResources {
     TiledMap: TiledResource
+    NPCSpriteSheets?: ex.ImageSource[]
 }
 
 export class GameScene extends Scene {
 
     resources: GameSceneResources;
     player: Player;
+    npcs: NPC[] = NPCData.World.NPCs;
 
     constructor(resources: GameSceneResources, player: Player) {
         super();
         this.resources = resources;
-        this.player = player
+        this.player = player;
     }
     
     override onPreLoad(loader: DefaultLoader): void {
@@ -34,11 +39,16 @@ export class GameScene extends Scene {
             this.add(door)
         }
 
+        for (let npc of this.npcs) {
+            this.add(npc)
+        }
+
         this.add(this.player);
         this.camera.strategy.lockToActor(this.player)
         this.camera.zoom = 2.1
 
         this.add(this.player.enterKey)
+        this.add(this.player.eKey)
 
        this.resources.TiledMap.addToScene(engine.currentScene, {pos: ex.vec(0, 0)})
     }

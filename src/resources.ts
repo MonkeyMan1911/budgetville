@@ -1,12 +1,19 @@
-import { TiledResource } from "@excaliburjs/plugin-tiled";
-import { ImageSource, Loader } from "excalibur";
+import { ImageSource, Loader, Resource } from "excalibur";
 
 export const Resources = {
 	MainCharacterSpriteSheetImg: new ImageSource("./Sprites/MainCharacter.png"),
-	EnterKeyImg: new ImageSource("./Tilesets/Keys/EnterKey.png")
+	EnterKeyImg: new ImageSource("./Tilesets/Keys/EnterKey.png"),
+	EKeyImg: new ImageSource("./Tilesets/Keys/KeyE.png")
 } as const; 
+
+export const SpriteSheetRes = {
+	TestBanker: new ImageSource("./Sprites/TestNpc.png")
+} as const;
 
 export const loader = new Loader();
 for (const res of Object.values(Resources)) {
+	loader.addResource(res);
+}
+for (const res of Object.values(SpriteSheetRes)) {
 	loader.addResource(res);
 }

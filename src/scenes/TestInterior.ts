@@ -1,12 +1,12 @@
 import { BoundingBox, Engine } from 'excalibur';
 import { Player } from '../objects/player';
-import { GameScene } from './GameScene';
+import { GameScene, GameSceneResources } from './GameScene';
 import { TiledResource } from '@excaliburjs/plugin-tiled';
 
 class TestInterior extends GameScene {
     constructor(player: Player) {
-        const resources = {
-            TiledMap: new TiledResource("./Maps/TestInterior.tmx"),
+        const resources: GameSceneResources = {
+            TiledMap: new TiledResource("./Maps/TestInterior.tmx")
         };
         super(resources, player);
     }
