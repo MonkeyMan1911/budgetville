@@ -1,0 +1,22 @@
+#textbox {
+    position: absolute;
+    bottom: 5%;
+    height: 30%;
+    width: 95%;
+    left: 1.5%;
+    background-color: rgb(238, 200, 170);
+    border-radius: 10px;
+    border: 7px solid rgb(68, 53, 32);
+    padding: 1%;
+
+    font-size: 45px;
+    font-family: "Jersey 10", sans-serif;
+}   
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}
