@@ -14,8 +14,8 @@ export class Textbox {
         this.element = document.getElementById("textbox")!; 
     }
 
-    isVisible(): boolean {
-        return this.element.classList.contains("show")
+    get isVisible(): boolean {
+        return this.element.classList.contains("show")   
     }
 
     show() {
