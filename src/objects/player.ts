@@ -5,6 +5,7 @@ import { AnimationManager } from "../Animations/AnimationManager";
 import DoorObject from "./DoorObject";
 import { UIKey } from "./UIKey";
 import { NPC } from "./NPC";
+import { gameTextBox } from "../UI/TextBox";
 
 export enum Directions {
 	Up = "up",
@@ -28,7 +29,8 @@ export class Player extends Actor {
 			spriteWidth: 16
 		}
 	})
- 
+	
+	public canMove: boolean = true
 	private direction: Directions = Directions.Down
 	private movementState: MovementStates = MovementStates.Idle
 	animationManager: AnimationManager = new AnimationManager({
@@ -46,6 +48,8 @@ export class Player extends Actor {
 
 	private collidingWithNpc: boolean = false;
 	private currentNpc: NPC | null = null;
+
+	private talking: boolean = false
 
 	constructor(enterKey: UIKey, eKey: UIKey) {
 		super({
@@ -123,10 +127,10 @@ export class Player extends Actor {
 		}
 	}
 
-	private async enterLogic(engine: Engine, other?: "door" | "npc") {
+	private async enterLogic(engine: Engine, other?: "door" | "npc" | "textbox") {
 		const keyboard = engine.input.keyboard
 
-		if (keyboard.wasPressed(Keys.Enter) && other == "door") {
+		if (keyboard.wasPressed(Keys.Enter) && other === "door") {
 			const targetScene = this.currentDoor?.leadsTo;
 			const newDirection = this.currentDoor?.properties![0].value as Directions;
 			const newX = (this.currentDoor?.properties?.[1]?.value as number ?? 0) * 16 + 8;
@@ -143,14 +147,21 @@ export class Player extends Actor {
 			this.pos = vec(newX, newY);
 		}
 
-		if (keyboard.wasPressed(Keys.E) && other == "npc") {
+		if (keyboard.wasPressed(Keys.E) && other === "npc") {
 			this.currentNpc?.talk()
+			this.eKey.hide()
+			this.talking = true
+		}
+
+		if (keyboard.wasPressed(Keys.Enter) && other === "textbox") {
+			gameTextBox.clear()
+			gameTextBox.hide()
 		}
 	}
 
 	override onPreUpdate(engine: Engine, elapsedMs: number): void {
 		// Only allow movement if no high-priority animation is playing
-		if (this.animationManager.currentAnimationPriority < 10) {
+		if (this.animationManager.currentAnimationPriority < 10 && this.canMove && !gameTextBox.isVisible) {
 			this.movementLogic(engine);
 		}
 		if (this.collidingWithDoor) {
@@ -158,6 +169,9 @@ export class Player extends Actor {
 		}
 		if (this.collidingWithNpc) {
 			this.enterLogic(engine, "npc")
+		}
+		if (gameTextBox.isVisible) {
+			this.enterLogic(engine, "textbox")
 		}
 	}
 
@@ -181,7 +195,7 @@ export class Player extends Actor {
 			this.collidingWithNpc = true
 			const otherNpc = other.owner instanceof NPC ? other.owner : other.owner.parent as NPC
 			this.currentNpc = otherNpc
-			if (!this.eKeyShown) {
+			if (!this.eKeyShown && !this.talking) {
 				this.eKey.setPos(ex.vec(otherNpc.pos.x , otherNpc.pos.y - 15))
 				this.eKey.show()
 				this.eKeyShown = true
@@ -211,6 +225,7 @@ export class Player extends Actor {
 			this.currentNpc = null
 			this.eKey.hide()
 			this.eKeyShown = false
+			this.talking = false
 		}
 	}
 }

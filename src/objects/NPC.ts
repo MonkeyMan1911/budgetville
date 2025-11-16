@@ -1,6 +1,7 @@
 import * as ex from "excalibur"
 import { Directions, MovementStates } from "./player";
 import { AnimationManager } from "../Animations/AnimationManager";
+import { gameTextBox } from "../UI/TextBox";
 
 
 export interface NPCTalkingEvent {
@@ -9,8 +10,8 @@ export interface NPCTalkingEvent {
 }
 
 export interface NPCTalking {
-    requiredFlags? : string[],
-    events: NPCTalkingEvent[]
+    requiredFlags : string[],
+    events: NPCTalkingEvent[],
 }
 
 export interface NPCConfig {
@@ -74,6 +75,28 @@ export class NPC extends ex.Actor {
     }
 
     talk() {
-        console.log("Helo")
+        let highestPriorityObj = this.talking[0]
+        for (let talkingObj of this.talking) {
+            let currentObjValid = true
+            for (let flag of talkingObj.requiredFlags) {
+                if (!window.localStorage.getItem(flag)) {
+                    currentObjValid = false
+                    break
+                }
+            }
+            if (currentObjValid && talkingObj.requiredFlags.length > highestPriorityObj.requiredFlags.length) {
+                highestPriorityObj = talkingObj;
+            }
+        }
+
+        for (let event of highestPriorityObj.events) {
+            if (event.type === "textMessage") {
+                gameTextBox.show()
+                gameTextBox.addText(event.text)
+                break
+            }
+        }
+        
+
     }
 }
