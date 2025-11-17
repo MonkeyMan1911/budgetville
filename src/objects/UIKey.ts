@@ -12,7 +12,7 @@ export class UIKey extends ex.Actor {
             height: keyImg.height / 2 ,
             width: keyImg.width,
             visible: false,
-            z: 41
+            z: 43
         })
 
         this.keySprite = ex.SpriteSheet.fromImageSource({

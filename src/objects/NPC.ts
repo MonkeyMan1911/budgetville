@@ -1,14 +1,13 @@
 import * as ex from "excalibur"
-import { Directions, MovementStates } from "./player";
+import { Directions, MovementStates, Player } from "./player";
 import { AnimationManager } from "../Animations/AnimationManager";
-import { gameTextBox } from "../UI/TextBox";
-
+import { gameTextBox } from "../UI/Textbox";
 
 export interface NPCTalkingEvent {
     type: string,
-    text: string
+    text: string,
+    direction: Directions | "mainChar"
 }
-
 export interface NPCTalking {
     requiredFlags : string[],
     events: NPCTalkingEvent[],
@@ -30,6 +29,9 @@ export class NPC extends ex.Actor {
     private animationManager: AnimationManager;
 
     private talking: NPCTalking[] = [];
+    private currentTalkingObj: NPCTalking | null = null
+    public numTalkingIndexes: number = 0
+    public currentTalkingIndex: number = 0
 
     private interactionZone: ex.Actor;
 
@@ -74,7 +76,7 @@ export class NPC extends ex.Actor {
         this.animationManager.play(`idle-${this.direction}`)
     }
 
-    talk() {
+    assignTalking() {
         let highestPriorityObj = this.talking[0]
         for (let talkingObj of this.talking) {
             let currentObjValid = true
@@ -89,14 +91,37 @@ export class NPC extends ex.Actor {
             }
         }
 
-        for (let event of highestPriorityObj.events) {
-            if (event.type === "textMessage") {
-                gameTextBox.show()
-                gameTextBox.addText(event.text)
-                break
-            }
-        }
-        
+        this.currentTalkingObj = highestPriorityObj 
+        this.numTalkingIndexes = this.currentTalkingObj.events.length - 1
+    }
 
+    continueTalking(index: number, player: Player) {
+        const eventObj = this.currentTalkingObj?.events[index]
+        
+        if (eventObj?.type === "textMessage") {
+            this.textMessage(eventObj, player)
+        }    
+        
+        this.currentTalkingIndex += 1 
+    }
+
+    private textMessage(eventObj: NPCTalkingEvent, player: Player) {
+        gameTextBox.clear()
+        gameTextBox.addText(eventObj.text)
+        gameTextBox.show()
+        this.direction = eventObj.direction === "mainChar" ? this.faceMainCharDirection(player) : eventObj.direction
+        this.animationManager.play(`idle-${this.direction}`)
+    }
+
+    private faceMainCharDirection(player: Player): Directions {
+        const dx = player.pos.x - this.pos.x;
+        const dy = player.pos.y - this.pos.y;
+        
+        if (Math.abs(dx) > Math.abs(dy)) {
+            return dx > 0 ? Directions.Right : Directions.Left;
+        } 
+        else {
+            return dy > 0 ? Directions.Down : Directions.Up;
+        }
     }
 }

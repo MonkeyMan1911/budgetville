@@ -13,7 +13,8 @@ export const NPCData = {
                     {
                         requiredFlags: [],
                         events: [
-                            {type: "textMessage", text: "Helloooo"}
+                            {type: "textMessage", text: "Helloooo", direction: "mainChar"},
+                            {type: "textMessage", text: "Second Message", direction: "mainChar"}
                         ]
                     }
                 ]

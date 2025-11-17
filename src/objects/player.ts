@@ -5,7 +5,7 @@ import { AnimationManager } from "../Animations/AnimationManager";
 import DoorObject from "./DoorObject";
 import { UIKey } from "./UIKey";
 import { NPC } from "./NPC";
-import { gameTextBox } from "../UI/TextBox";
+import { gameTextBox } from "../UI/Textbox";
 
 export enum Directions {
 	Up = "up",
@@ -31,7 +31,7 @@ export class Player extends Actor {
 	})
 	
 	public canMove: boolean = true
-	private direction: Directions = Directions.Down
+	public direction: Directions = Directions.Down
 	private movementState: MovementStates = MovementStates.Idle
 	animationManager: AnimationManager = new AnimationManager({
 		spritesheet: this.spriteSheet,
@@ -148,14 +148,22 @@ export class Player extends Actor {
 		}
 
 		if (keyboard.wasPressed(Keys.E) && other === "npc") {
-			this.currentNpc?.talk()
+			this.currentNpc?.assignTalking()
+			this.currentNpc?.continueTalking(this.currentNpc?.currentTalkingIndex, this)
 			this.eKey.hide()
 			this.talking = true
 		}
 
 		if (keyboard.wasPressed(Keys.Enter) && other === "textbox") {
-			gameTextBox.clear()
-			gameTextBox.hide()
+			if (this.currentNpc!.currentTalkingIndex <= this.currentNpc!.numTalkingIndexes) {
+				this.currentNpc?.continueTalking(this.currentNpc.currentTalkingIndex, this)
+			}
+			else {
+				gameTextBox.clear()
+				gameTextBox.hide()
+				this.currentNpc!.currentTalkingIndex = 0
+				this.currentNpc!.numTalkingIndexes = 0
+			}
 		}
 	}
 
