@@ -20,3 +20,11 @@
 .hide {
     display: none;
 }
+
+#textbox-arrow {
+    position: absolute;
+    bottom: 25px;
+    right: 20px;
+    transform: scale(5);
+    image-rendering: pixelated;
+}

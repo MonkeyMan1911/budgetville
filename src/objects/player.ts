@@ -155,6 +155,12 @@ export class Player extends Actor {
 		}
 
 		if (keyboard.wasPressed(Keys.Enter) && other === "textbox") {
+
+			if (gameTextBox.typing) {
+				gameTextBox.skipTyping();
+				return;
+			}
+
 			if (this.currentNpc!.currentTalkingIndex <= this.currentNpc!.numTalkingIndexes) {
 				this.currentNpc?.continueTalking(this.currentNpc.currentTalkingIndex, this)
 			}

@@ -9,6 +9,9 @@ export const calculatePixelConversion = (screen: ex.Screen) => {
 
 export class Textbox {
     private element: HTMLElement;
+    private isTyping: boolean = false;
+    private typingSpeed: number = 30; // milliseconds per character
+    private textContent: string = "";
 
     constructor() {
         this.element = document.getElementById("textbox")!; 
@@ -16,6 +19,10 @@ export class Textbox {
 
     get isVisible(): boolean {
         return this.element.classList.contains("show")   
+    }
+
+    get typing(): boolean {
+        return this.isTyping;
     }
 
     show() {
@@ -28,12 +35,33 @@ export class Textbox {
         this.element.classList.add("hide")
     }
 
-    addText(text: string) {
-        this.element.innerText = text
+    async addText(text: string) {
+        this.isTyping = true;
+        this.textContent = "";
+        
+        for (let i = 0; i < text.length; i++) {
+            if (!this.isTyping) {
+                this.textContent = text;
+                break;
+            }
+            
+            this.textContent += text[i];
+            this.element.innerHTML = this.textContent + `<img id="textbox-arrow" src="./UI Images/NextDialouge.png" style="display: none;">`;
+            await new Promise(resolve => setTimeout(resolve, this.typingSpeed));
+        }
+
+        // Show arrow when done
+        this.element.innerHTML = this.textContent + `<img id="textbox-arrow" src="./UI Images/NextDialouge.png">`;
+        this.isTyping = false;
+    }
+
+    skipTyping() {
+        this.isTyping = false;
     }
 
     clear() {
-        this.element.innerText = ""
+        this.textContent = "";
+        this.element.innerHTML = `<img id="textbox-arrow" src="./UI Images/NextDialouge.png">`
     }
 }
 
