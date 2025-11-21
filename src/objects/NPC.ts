@@ -2,15 +2,22 @@ import * as ex from "excalibur"
 import { Directions, MovementStates, Player } from "./player";
 import { AnimationManager } from "../Animations/AnimationManager";
 import { gameTextBox } from "../UI/Textbox";
+import { calculateDistance } from "../utils/calculateDistance";
 
-export interface NPCTalkingEvent {
-    type: string,
+export interface TalkingEvent {
+    type: "textMessage",
     text: string,
     direction: Directions | "mainChar"
 }
+export interface WalkingEvent {
+    type: "walk",
+    tiles: number,
+    direction: Directions
+}
+export type EventObj = TalkingEvent | WalkingEvent
 export interface NPCTalking {
     requiredFlags : string[],
-    events: NPCTalkingEvent[],
+    events: EventObj[],
 }
 
 export interface NPCConfig {
@@ -34,6 +41,14 @@ export class NPC extends ex.Actor {
     public currentTalkingIndex: number = 0
 
     private interactionZone: ex.Actor;
+
+    private targetPos: ex.Vector = ex.Vector.Zero;
+    private distanceTraveled: number = 0;
+    private walkingEvent: WalkingEvent | null = null
+    private speed: number = 1.2
+    private moveDir: ex.Vector = ex.Vector.Zero
+
+    private playerRef: Player | null = null;
 
     constructor(config: NPCConfig) {
         super({
@@ -96,16 +111,22 @@ export class NPC extends ex.Actor {
     }
 
     continueTalking(index: number, player: Player) {
+        this.playerRef = player
         const eventObj = this.currentTalkingObj?.events[index]
         
         if (eventObj?.type === "textMessage") {
-            this.textMessage(eventObj, player)
+            this.textMessage(eventObj as TalkingEvent, player)
         }    
+        if (eventObj?.type === "walk") {
+            gameTextBox.clear()
+            gameTextBox.hide()
+            this.walk(eventObj as WalkingEvent)
+        }
         
         this.currentTalkingIndex += 1 
     }
 
-    private textMessage(eventObj: NPCTalkingEvent, player: Player) {
+    private textMessage(eventObj: TalkingEvent, player: Player) {
         gameTextBox.clear()
         gameTextBox.addText(eventObj.text)
         gameTextBox.show()
@@ -122,6 +143,69 @@ export class NPC extends ex.Actor {
         } 
         else {
             return dy > 0 ? Directions.Down : Directions.Up;
+        }
+    }
+
+    private walk(eventObj: WalkingEvent) {
+        let amountToWalk = calculateDistance(eventObj.tiles)
+        this.distanceTraveled = 0
+        this.walkingEvent = eventObj
+
+        this.direction = eventObj.direction
+        
+        let moveDir = ex.Vector.Zero
+        switch (eventObj.direction) {
+            case Directions.Down: moveDir = ex.Vector.Down; break;
+            case Directions.Up: moveDir = ex.Vector.Up; break;
+            case Directions.Left: moveDir = ex.Vector.Left; break;
+            case Directions.Right: moveDir = ex.Vector.Right; break;
+        }
+        this.targetPos = moveDir.x !== 0 ? ex.vec(this.pos.x + amountToWalk * moveDir.x, this.pos.y) : ex.vec(this.pos.x, this.pos.y + amountToWalk * moveDir.y)
+
+        this.moveDir = moveDir.normalize().scale(this.speed)
+    }
+
+    override onPreUpdate(engine: ex.Engine, elapsed: number): void {
+        if (!this.targetPos.equals(ex.Vector.Zero)) {
+            let reachedTarget = false
+ 
+            if (this.moveDir.y !== 0) {
+                if (this.moveDir.y > 0) {
+                    if (Math.floor(this.pos.y) >= Math.floor(this.targetPos.y)) {
+                        reachedTarget = true
+                    }
+                } else {
+                    if (Math.floor(this.pos.y) <= Math.floor(this.targetPos.y)) {
+                        reachedTarget = true
+                    }
+                }
+            } 
+
+            if (this.moveDir.x !== 0) {
+                if (this.moveDir.x > 0) {
+                    if (Math.floor(this.pos.x) >= Math.floor(this.targetPos.x)) {
+                        reachedTarget = true
+                    } 
+                } else {
+                    if (Math.floor(this.pos.x) <= Math.floor(this.targetPos.x)) {
+                        reachedTarget = true
+                    }
+                }
+            }
+ 
+            if (!reachedTarget) {
+                this.pos.x += this.moveDir.x 
+                this.pos.y += this.moveDir.y 
+                this.movementState = MovementStates.Walk 
+                this.animationManager.play(`walk-${this.direction}`)
+            } else {
+                this.movementState = MovementStates.Idle
+                this.animationManager.goToIdle(this.direction)
+                this.targetPos = ex.vec(0, 0)
+                if (this.currentTalkingIndex <= this.numTalkingIndexes) {
+                    this.continueTalking(this.currentTalkingIndex, this.playerRef!)
+                }
+            }
         }
     }
 }

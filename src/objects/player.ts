@@ -148,6 +148,7 @@ export class Player extends Actor {
 		}
 
 		if (keyboard.wasPressed(Keys.E) && other === "npc") {
+			this.canMove = false
 			this.currentNpc?.assignTalking()
 			this.currentNpc?.continueTalking(this.currentNpc?.currentTalkingIndex, this)
 			this.eKey.hide()
@@ -169,6 +170,8 @@ export class Player extends Actor {
 				gameTextBox.hide()
 				this.currentNpc!.currentTalkingIndex = 0
 				this.currentNpc!.numTalkingIndexes = 0
+				this.talking = false
+				this.canMove = true
 			}
 		}
 	}
@@ -234,7 +237,7 @@ export class Player extends Actor {
 			this.enterKeyShown = false
 		}	
 
-		if (other.owner instanceof NPC || other.owner?.parent instanceof NPC) {
+		if (other.owner instanceof NPC && !this.talking || other.owner?.parent instanceof NPC && !this.talking) {
 			this.collidingWithNpc = false
 			this.currentNpc = null
 			this.eKey.hide()
