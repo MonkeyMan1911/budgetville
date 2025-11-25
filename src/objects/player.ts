@@ -51,6 +51,8 @@ export class Player extends Actor {
 
 	private talking: boolean = false
 
+	private balance: number = 0.0
+
 	constructor(enterKey: UIKey, eKey: UIKey) {
 		super({
 			name: 'Player',
@@ -147,7 +149,10 @@ export class Player extends Actor {
 			this.pos = vec(newX, newY);
 		}
 
-		if (keyboard.wasPressed(Keys.E) && other === "npc") {
+		if (keyboard.wasPressed(Keys.E) && other === "npc" && !this.talking) {
+			this.movementState = MovementStates.Idle
+			this.animationManager.goToIdle(this.direction)
+
 			this.canMove = false
 			this.currentNpc?.assignTalking()
 			this.currentNpc?.continueTalking(this.currentNpc?.currentTalkingIndex, this)
@@ -172,6 +177,11 @@ export class Player extends Actor {
 				this.currentNpc!.numTalkingIndexes = 0
 				this.talking = false
 				this.canMove = true
+
+				this.collidingWithNpc = false
+				this.currentNpc = null
+				this.eKey.hide()
+				this.eKeyShown = false
 			}
 		}
 	}
@@ -237,12 +247,14 @@ export class Player extends Actor {
 			this.enterKeyShown = false
 		}	
 
-		if (other.owner instanceof NPC && !this.talking || other.owner?.parent instanceof NPC && !this.talking) {
-			this.collidingWithNpc = false
-			this.currentNpc = null
-			this.eKey.hide()
-			this.eKeyShown = false
-			this.talking = false
+		if (other.owner instanceof NPC && !this.talking || other.owner?.parent instanceof NPC) {
+			if (!this.talking) {
+				this.collidingWithNpc = false
+				this.currentNpc = null
+				this.eKey.hide()
+				this.eKeyShown = false
+				this.talking = false
+			}
 		}
 	}
 }

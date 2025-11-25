@@ -14,7 +14,16 @@ export interface WalkingEvent {
     tiles: number,
     direction: Directions
 }
-export type EventObj = TalkingEvent | WalkingEvent
+export interface AddFlagEvent {
+    type: "addFlag",
+    flag: string,
+    value: any
+}
+export interface RemoveFlagEvent {
+    type: "removeFlag",
+    flag: string,
+}
+export type EventObj = TalkingEvent | WalkingEvent | AddFlagEvent | RemoveFlagEvent
 export interface NPCTalking {
     requiredFlags : string[],
     events: EventObj[],
@@ -116,14 +125,31 @@ export class NPC extends ex.Actor {
         
         if (eventObj?.type === "textMessage") {
             this.textMessage(eventObj as TalkingEvent, player)
+            this.currentTalkingIndex += 1
         }    
-        if (eventObj?.type === "walk") {
+        else if (eventObj?.type === "walk") {
             gameTextBox.clear()
             gameTextBox.hide()
             this.walk(eventObj as WalkingEvent)
+            this.currentTalkingIndex += 1
+        }
+        else if (eventObj?.type === "addFlag") {
+            window.localStorage.setItem(eventObj.flag, eventObj.value)
+            this.currentTalkingIndex += 1
+
+            if (this.currentTalkingIndex <= this.numTalkingIndexes) {
+                this.continueTalking(this.currentTalkingIndex, player)
+            }
+        }
+        else if (eventObj?.type === "removeFlag") {
+            window.localStorage.removeItem(eventObj.flag)
+            this.currentTalkingIndex += 1
+            
+            if (this.currentTalkingIndex <= this.numTalkingIndexes) {
+                this.continueTalking(this.currentTalkingIndex, player)
+            }
         }
         
-        this.currentTalkingIndex += 1 
     }
 
     private textMessage(eventObj: TalkingEvent, player: Player) {
@@ -147,19 +173,19 @@ export class NPC extends ex.Actor {
     }
 
     private walk(eventObj: WalkingEvent) {
-        let amountToWalk = calculateDistance(eventObj.tiles)
+        let amountToWalk = calculateDistance(eventObj.tiles) 
         this.distanceTraveled = 0
-        this.walkingEvent = eventObj
+        this.walkingEvent = eventObj 
 
         this.direction = eventObj.direction
-        
+         
         let moveDir = ex.Vector.Zero
         switch (eventObj.direction) {
             case Directions.Down: moveDir = ex.Vector.Down; break;
             case Directions.Up: moveDir = ex.Vector.Up; break;
             case Directions.Left: moveDir = ex.Vector.Left; break;
             case Directions.Right: moveDir = ex.Vector.Right; break;
-        }
+        } 
         this.targetPos = moveDir.x !== 0 ? ex.vec(this.pos.x + amountToWalk * moveDir.x, this.pos.y) : ex.vec(this.pos.x, this.pos.y + amountToWalk * moveDir.y)
 
         this.moveDir = moveDir.normalize().scale(this.speed)

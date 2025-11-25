@@ -14,10 +14,11 @@ export const NPCData = {
                     {
                         requiredFlags: [],
                         events: [
+                            {type: "addFlag", flag: "testFlag", value: true},
                             {type: "textMessage", text: "Helloooo", direction: "mainChar"},
                             {type: "textMessage", text: "Second Message", direction: "mainChar"},
                             {type: "walk", tiles: 5, direction: Directions.Up},
-                            {type: "textMessage", text: "Test 3rd Message", direction: "mainChar"}
+                            {type: "textMessage", text: "Test 3rd Message", direction: "mainChar"},
                         ]
                     }
                 ]
