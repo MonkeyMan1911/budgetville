@@ -1,14 +1,14 @@
-import { Player } from '../objects/player';
+import { player, Player } from '../objects/player';
 import { GameScene } from './GameScene';
 import { TiledResource } from '@excaliburjs/plugin-tiled';
 
 class World extends GameScene {
-    constructor(player: Player) {
+    constructor() {
         const resources = {
             TiledMap: new TiledResource("./Maps/ExteriorsSet.tmx"),
         };
-        super(resources, player);
+        super(resources, null as any);
     }
 }
 
-export default World;
+export const world = new World();

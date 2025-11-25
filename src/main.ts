@@ -1,8 +1,8 @@
 import { DisplayMode, Engine, vec } from "excalibur";
 import { loader, Resources } from "./resources";
-import World from "./scenes/World";
+import { world } from "./scenes/World";
 import TestInterior from "./scenes/TestInterior";
-import { Player } from "./objects/player";
+import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
 
 // Goal is to keep main.ts small and just enough to configure the engine
@@ -16,12 +16,13 @@ const game = new Engine({
 });
 
 game.start(loader).then(() => {
-	const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg)
-	const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg)
-    const player = new Player(enterKey, eKey);
-    player.z = 42
+	const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg);
+	const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg);
+	const player = initializePlayer(enterKey, eKey);
 
-	game.add("world", new World(player))
-	game.add("testInterior", new TestInterior(player))
+	world.player = player
+
+	game.add("world", world)
+	//game.add("testInterior", new TestInterior(player))
 	game.goToScene("world")
 })

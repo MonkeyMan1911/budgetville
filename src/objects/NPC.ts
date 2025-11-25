@@ -3,6 +3,7 @@ import { Directions, MovementStates, Player } from "./player";
 import { AnimationManager } from "../Animations/AnimationManager";
 import { gameTextBox } from "../UI/Textbox";
 import { calculateDistance } from "../utils/calculateDistance";
+import { GameScene } from "../scenes/GameScene";
 
 export interface TalkingEvent {
     type: "textMessage",
@@ -33,7 +34,8 @@ export interface NPCConfig {
     name: string,
     pos: ex.Vector,
     spriteSheet: ex.ImageSource,
-    talking : NPCTalking[]
+    talking : NPCTalking[],
+    gameScene: GameScene
 }
 
 export class NPC extends ex.Actor {
@@ -59,6 +61,8 @@ export class NPC extends ex.Actor {
 
     private playerRef: Player | null = null;
 
+    private gameScene: GameScene;
+
     constructor(config: NPCConfig) {
         super({
             name: config.name,
@@ -68,6 +72,8 @@ export class NPC extends ex.Actor {
             collisionType: ex.CollisionType.Fixed,
             z: 40
         })
+
+        this.gameScene = config.gameScene
 
         this.interactionZone = new ex.Actor({
             name: `${this.name}-interaction-zone`,

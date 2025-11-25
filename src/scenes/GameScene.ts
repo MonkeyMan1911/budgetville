@@ -6,8 +6,8 @@ import DoorObject from "../objects/DoorObject";
 import { TiledResource } from "@excaliburjs/plugin-tiled";
 import { NPC, NPCConfig } from "../objects/NPC";
 import { SpriteSheetRes } from "../resources";
-import { NPCData } from "../objects/NPCData";
 import { balanceDiv } from "../UI/BalanceUI";
+import { createNPCData } from "../objects/NPCData";
 
 
 export interface GameSceneResources {
@@ -19,12 +19,14 @@ export class GameScene extends Scene {
 
     resources: GameSceneResources;
     player: Player;
-    npcs: NPC[] = NPCData.World.NPCs;
+    npcs: NPC[] = [];
 
     constructor(resources: GameSceneResources, player: Player) {
         super();
         this.resources = resources;
         this.player = player;
+
+        this.npcs = createNPCData(this).World.NPCs
     }
     
     override onPreLoad(loader: DefaultLoader): void {
@@ -53,7 +55,7 @@ export class GameScene extends Scene {
 
        this.resources.TiledMap.addToScene(engine.currentScene, {pos: ex.vec(0, 0)})
 
-       balanceDiv.show()
+        balanceDiv.show()
         balanceDiv.updateBalance(this.player.balance)
     }
 

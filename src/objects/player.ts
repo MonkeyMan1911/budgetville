@@ -258,3 +258,10 @@ export class Player extends Actor {
 		}
 	}
 }
+export let player: Player = null as any;
+
+export function initializePlayer(enterKey: UIKey, eKey: UIKey): Player {
+	player = new Player(enterKey, eKey);
+	player.z = 42;
+	return player;
+}
