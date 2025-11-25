@@ -51,7 +51,7 @@ export class Player extends Actor {
 
 	private talking: boolean = false
 
-	private balance: number = 0.0
+	public balance: number = 0.0
 
 	constructor(enterKey: UIKey, eKey: UIKey) {
 		super({

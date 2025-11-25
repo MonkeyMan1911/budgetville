@@ -7,6 +7,7 @@ import { TiledResource } from "@excaliburjs/plugin-tiled";
 import { NPC, NPCConfig } from "../objects/NPC";
 import { SpriteSheetRes } from "../resources";
 import { NPCData } from "../objects/NPCData";
+import { balanceDiv } from "../UI/BalanceUI";
 
 
 export interface GameSceneResources {
@@ -51,6 +52,9 @@ export class GameScene extends Scene {
         this.add(this.player.eKey)
 
        this.resources.TiledMap.addToScene(engine.currentScene, {pos: ex.vec(0, 0)})
+
+       balanceDiv.show()
+        balanceDiv.updateBalance(this.player.balance)
     }
 
     override onActivate(context: SceneActivationContext<unknown>): void {

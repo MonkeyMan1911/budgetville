@@ -1,0 +1,21 @@
+#balance-hud {
+    position: absolute;
+    top: 7%;        /* Add this - distance from top */
+    right: 10%;      /* Add this - distance from right */
+    display: inline-block;
+    line-height: 0;
+}
+
+#balance-hud.hide {
+    display: none !important;
+}
+
+#balance-hud.show {
+    display: inline-block !important;
+}
+
+#balance-img {
+    transform: scale(5);
+    image-rendering: pixelated;
+    display: block;
+}
