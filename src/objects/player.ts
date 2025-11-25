@@ -150,12 +150,9 @@ export class Player extends Actor {
 		}
 
 		if (keyboard.wasPressed(Keys.E) && other === "npc" && !this.talking) {
-			this.movementState = MovementStates.Idle
-			this.animationManager.goToIdle(this.direction)
-
 			this.canMove = false
 			this.currentNpc?.assignTalking()
-			this.currentNpc?.continueTalking(this.currentNpc?.currentTalkingIndex, this)
+			this.currentNpc?.startCutscene(this) // Changed from continueTalking
 			this.eKey.hide()
 			this.talking = true
 		}
@@ -167,14 +164,13 @@ export class Player extends Actor {
 				return;
 			}
 
-			if (this.currentNpc!.currentTalkingIndex <= this.currentNpc!.numTalkingIndexes) {
-				this.currentNpc?.continueTalking(this.currentNpc.currentTalkingIndex, this)
+			if (!this.currentNpc!.isCutsceneComplete()) { // Changed condition
+				this.currentNpc?.continueCutscene() // Changed method
 			}
 			else {
 				gameTextBox.clear()
 				gameTextBox.hide()
-				this.currentNpc!.currentTalkingIndex = 0
-				this.currentNpc!.numTalkingIndexes = 0
+				this.currentNpc!.resetCutscene() // Changed method
 				this.talking = false
 				this.canMove = true
 
