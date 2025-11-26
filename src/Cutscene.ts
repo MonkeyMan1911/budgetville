@@ -1,44 +1,32 @@
-/* 
-This class will handle all cutscenes 
-    1. Refactor code from npc to here
-*/
-
-import { NPCTalking, TalkingEvent, WalkingEvent } from "./objects/NPC";
+import { NPCTalking, TalkingEvent, WalkingEvent, AddFlagEvent, RemoveFlagEvent } from "./objects/NPC";
 import { Directions, Player } from "./objects/player";
 import { gameTextBox } from "./UI/Textbox";
+import { GameScene } from "./scenes/GameScene";
+import { NPC } from "./objects/NPC";
 
 export class Cutscene {
     private cutsceneData: NPCTalking;
     private numEventIndexes: number = 0;
     private currentEventIndex: number = 0;
     private playerRef: Player | null = null;
-    
-    // Callback for walk events - NPC will provide this
-    private onWalkEvent: ((event: WalkingEvent) => void) | null = null;
-    // Callback for face direction - NPC will provide this
-    private onFaceDirection: ((direction: Directions) => void) | null = null;
+    private gameSceneRef: GameScene | null = null;
+    private initiatingNPC: NPC | null = null;
 
     constructor(cutsceneData: NPCTalking) {
         this.cutsceneData = cutsceneData;
         this.numEventIndexes = cutsceneData.events.length - 1;
     }
 
-    setWalkCallback(callback: (event: WalkingEvent) => void) {
-        this.onWalkEvent = callback;
-    }
-
-    setFaceDirectionCallback(callback: (direction: Directions) => void) {
-        this.onFaceDirection = callback;
-    }
-
-    start(player: Player) {
+    start(player: Player, gameScene: GameScene, initiatingNPC?: NPC) {
         this.playerRef = player;
+        this.gameSceneRef = gameScene;
+        this.initiatingNPC = initiatingNPC || null;
         this.currentEventIndex = 0;
         this.continueToNextEvent();
     }
 
     continueToNextEvent() {
-        if (!this.playerRef) return;
+        if (!this.playerRef || !this.gameSceneRef) return;
 
         const eventObj = this.cutsceneData.events[this.currentEventIndex];
         
@@ -51,15 +39,15 @@ export class Cutscene {
             this.currentEventIndex += 1;
         }
         else if (eventObj?.type === "addFlag") {
-            window.localStorage.setItem(eventObj.flag, eventObj.value);
+            this.handleAddFlag(eventObj as AddFlagEvent);
             this.currentEventIndex += 1;
-
+            
             if (this.currentEventIndex <= this.numEventIndexes) {
                 this.continueToNextEvent();
             }
         }
         else if (eventObj?.type === "removeFlag") {
-            window.localStorage.removeItem(eventObj.flag);
+            this.handleRemoveFlag(eventObj as RemoveFlagEvent);
             this.currentEventIndex += 1;
             
             if (this.currentEventIndex <= this.numEventIndexes) {
@@ -73,10 +61,19 @@ export class Cutscene {
         gameTextBox.addText(eventObj.text);
         gameTextBox.show();
         
-        const direction = eventObj.direction === "mainChar" ? this.calculateFacePlayerDirection() : eventObj.direction;
-            
-        if (this.onFaceDirection) {
-            this.onFaceDirection(direction);
+        // Calculate which direction the NPC should face
+        if (this.initiatingNPC) {
+            let direction: Directions = Directions.Down; // Initialize with a default
+            if (eventObj.direction === "currentDir") {
+                direction = this.initiatingNPC.direction
+            }
+            else if (eventObj.direction === "mainChar") {
+                direction = this.calculateFacePlayerDirection()
+            }
+            else {
+                direction = eventObj.direction as Directions; // Type assertion
+            }
+            this.initiatingNPC.faceDirection(direction);
         }
     }
 
@@ -84,17 +81,57 @@ export class Cutscene {
         gameTextBox.clear();
         gameTextBox.hide();
         
-        if (this.onWalkEvent) {
-            this.onWalkEvent(eventObj);
+        // Determine who should walk
+        const walker = this.getWalker(eventObj.who);
+        
+        if (walker) {
+            walker.walkForCutscene(eventObj, () => {
+                // Callback when walk completes
+                if (this.currentEventIndex <= this.numEventIndexes) {
+                    this.continueToNextEvent();
+                }
+            });
         }
     }
 
-    private calculateFacePlayerDirection(): Directions {
-        if (!this.playerRef || !this.onFaceDirection) return Directions.Down;
+    private handleAddFlag(eventObj: AddFlagEvent) {
+        window.localStorage.setItem(eventObj.flag, eventObj.value);
+    }
+
+    private handleRemoveFlag(eventObj: RemoveFlagEvent) {
+        window.localStorage.removeItem(eventObj.flag);
+    }
+
+    private getWalker(who?: string): NPC | Player | null {
+        if (!who || who === "player") {
+            return this.playerRef;
+        }
         
-        // This will be calculated by the NPC based on positions
-        // For now, return a default
-        return Directions.Down;
+        // Find NPC by name in the game scene
+        if (this.gameSceneRef) {
+            const actors = this.gameSceneRef.actors;
+            for (const actor of actors) {
+                if (actor instanceof NPC && actor.name === who) {
+                    return actor;
+                }
+            }
+        }
+        
+        return null;
+    }
+
+    private calculateFacePlayerDirection(): Directions {
+        if (!this.playerRef || !this.initiatingNPC) return Directions.Down;
+        
+        const dx = this.playerRef.pos.x - this.initiatingNPC.pos.x;
+        const dy = this.playerRef.pos.y - this.initiatingNPC.pos.y;
+        
+        if (Math.abs(dx) > Math.abs(dy)) {
+            return dx > 0 ? Directions.Right : Directions.Left;
+        } 
+        else {
+            return dy > 0 ? Directions.Down : Directions.Up;
+        }
     }
 
     isComplete(): boolean {
@@ -104,6 +141,8 @@ export class Cutscene {
     reset() {
         this.currentEventIndex = 0;
         this.playerRef = null;
+        this.gameSceneRef = null;
+        this.initiatingNPC = null;
     }
 
     get currentIndex(): number {

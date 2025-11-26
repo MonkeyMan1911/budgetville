@@ -1,19 +1,19 @@
 import * as ex from "excalibur"
-import { Directions, MovementStates, Player } from "./player";
+import { Directions, MovementStates } from "./player";
 import { AnimationManager } from "../Animations/AnimationManager";
 import { calculateDistance } from "../utils/calculateDistance";
 import { GameScene } from "../scenes/GameScene";
-import { Cutscene } from "../Cutscene";
 
 export interface TalkingEvent {
     type: "textMessage",
     text: string,
-    direction: Directions | "mainChar"
+    direction: Directions | "mainChar" | "currentDir"
 }
 export interface WalkingEvent {
     type: "walk",
     tiles: number,
-    direction: Directions
+    direction: Directions,
+    who?: string // Optional: name of NPC or "player". Defaults to the NPC that initiated the cutscene
 }
 export interface AddFlagEvent {
     type: "addFlag",
@@ -25,8 +25,9 @@ export interface RemoveFlagEvent {
     flag: string,
 }
 export type EventObj = TalkingEvent | WalkingEvent | AddFlagEvent | RemoveFlagEvent
+
 export interface NPCTalking {
-    requiredFlags : string[],
+    requiredFlags: string[],
     events: EventObj[],
 }
 
@@ -34,25 +35,24 @@ export interface NPCConfig {
     name: string,
     pos: ex.Vector,
     spriteSheet: ex.ImageSource,
-    talking : NPCTalking[],
+    talking: NPCTalking[],
     gameScene: GameScene
 }
 
 export class NPC extends ex.Actor {
     private spriteSheet: ex.SpriteSheet;
 
-    private direction: Directions = Directions.Down;
+    public direction: Directions = Directions.Down;
     private movementState: MovementStates = MovementStates.Idle;
     private animationManager: AnimationManager;
 
     private talking: NPCTalking[] = [];
-    private currentCutscene: Cutscene | null = null;
-
     private interactionZone: ex.Actor;
 
     private targetPos: ex.Vector = ex.Vector.Zero;
     private speed: number = 1.2;
     private moveDir: ex.Vector = ex.Vector.Zero;
+    private walkCompleteCallback: (() => void) | null = null;
 
     private gameScene: GameScene;
 
@@ -98,7 +98,8 @@ export class NPC extends ex.Actor {
         this.animationManager.play(`idle-${this.direction}`);
     }
 
-    assignTalking() {
+    // Returns the appropriate talking data based on flags
+    getTalkingData(): NPCTalking | null {
         let highestPriorityObj = this.talking[0];
         for (let talkingObj of this.talking) {
             let currentObjValid = true;
@@ -112,77 +113,29 @@ export class NPC extends ex.Actor {
                 highestPriorityObj = talkingObj;
             }
         }
-
-        // Create a new cutscene with the selected talking data
-        this.currentCutscene = new Cutscene(highestPriorityObj);
-        
-        // Set up callbacks for the cutscene
-        this.currentCutscene.setWalkCallback((walkEvent) => {
-            this.walk(walkEvent);
-        });
-        
-        this.currentCutscene.setFaceDirectionCallback((direction) => {
-            this.direction = direction;
-            this.animationManager.play(`idle-${this.direction}`);
-        });
+        return highestPriorityObj;
     }
 
-    startCutscene(player: Player) {
-        if (this.currentCutscene) {
-            // Override the face direction callback to include player position
-            this.currentCutscene.setFaceDirectionCallback((direction) => {
-                if (direction === Directions.Down) { // This means it was "mainChar"
-                    this.direction = this.faceMainCharDirection(player);
-                } else {
-                    this.direction = direction;
-                }
-                this.animationManager.play(`idle-${this.direction}`);
-            });
-            
-            this.currentCutscene.start(player);
-        }
+    // Method for cutscene to tell NPC to face a direction
+    faceDirection(direction: Directions) {
+        this.direction = direction;
+        this.animationManager.play(`idle-${this.direction}`);
     }
 
-    continueCutscene() {
-        if (this.currentCutscene && !this.currentCutscene.isComplete()) {
-            this.currentCutscene.continueToNextEvent();
-        }
-    }
-
-    isCutsceneComplete(): boolean {
-        return this.currentCutscene ? this.currentCutscene.isComplete() : true;
-    }
-
-    resetCutscene() {
-        if (this.currentCutscene) {
-            this.currentCutscene.reset();
-            this.currentCutscene = null;
-        }
-    }
-
-    private faceMainCharDirection(player: Player): Directions {
-        const dx = player.pos.x - this.pos.x;
-        const dy = player.pos.y - this.pos.y;
-        
-        if (Math.abs(dx) > Math.abs(dy)) {
-            return dx > 0 ? Directions.Right : Directions.Left;
-        } 
-        else {
-            return dy > 0 ? Directions.Down : Directions.Up;
-        }
-    }
-
-    private walk(eventObj: WalkingEvent) {
-        let amountToWalk = calculateDistance(eventObj.tiles);
-        this.direction = eventObj.direction;
+    // Method for cutscene to tell NPC to walk
+    walkForCutscene(walkEvent: WalkingEvent, onComplete: () => void) {
+        const amountToWalk = calculateDistance(walkEvent.tiles);
+        this.direction = walkEvent.direction;
+        this.walkCompleteCallback = onComplete;
          
         let moveDir = ex.Vector.Zero;
-        switch (eventObj.direction) {
+        switch (walkEvent.direction) {
             case Directions.Down: moveDir = ex.Vector.Down; break;
             case Directions.Up: moveDir = ex.Vector.Up; break;
             case Directions.Left: moveDir = ex.Vector.Left; break;
             case Directions.Right: moveDir = ex.Vector.Right; break;
         } 
+        
         this.targetPos = moveDir.x !== 0 
             ? ex.vec(this.pos.x + amountToWalk * moveDir.x, this.pos.y) 
             : ex.vec(this.pos.x, this.pos.y + amountToWalk * moveDir.y);
@@ -228,20 +181,13 @@ export class NPC extends ex.Actor {
                 this.animationManager.goToIdle(this.direction);
                 this.targetPos = ex.vec(0, 0);
                 
-                // Continue to next cutscene event after walk completes
-                if (this.currentCutscene && !this.currentCutscene.isComplete()) {
-                    this.currentCutscene.continueToNextEvent();
+                // Notify cutscene that walk is complete
+                if (this.walkCompleteCallback) {
+                    console.log("finishedwalkd")
+                    this.walkCompleteCallback();
+                    this.walkCompleteCallback = null;
                 }
             }
         }
-    }
-
-    // Getter for backward compatibility
-    get numTalkingIndexes(): number {
-        return this.currentCutscene ? this.currentCutscene.maxIndex : 0;
-    }
-
-    get currentTalkingIndex(): number {
-        return this.currentCutscene ? this.currentCutscene.currentIndex : 0;
     }
 }

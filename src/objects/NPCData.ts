@@ -18,10 +18,36 @@ export function createNPCData(gameScene: GameScene) {
                             requiredFlags: [],
                             events: [
                                 {type: "addFlag", flag: "testFlag", value: true},
-                                {type: "textMessage", text: "Helloooo", direction: "mainChar"},
-                                {type: "textMessage", text: "Second Message", direction: "mainChar"},
-                                {type: "walk", tiles: 5, direction: Directions.Up},
-                                {type: "textMessage", text: "Test 3rd Message", direction: "mainChar"},
+                                {type: "textMessage", text: "Hello! Watch me walk!", direction: "mainChar"},
+                                {type: "walk", tiles: 5, direction: Directions.Up, who: "TestNpc"}, // NPC walks (no 'who' field)
+                                {type: "textMessage", text: "Now you walk!", direction: Directions.Down},
+                                {type: "walk", tiles: 3, direction: Directions.Right, who: "player"}, // Player walks
+                                {type: "textMessage", text: "Great! Let's both move!", direction: "mainChar"},
+                                {type: "walk", tiles: 2, direction: Directions.Left, who: "TestNpc"}, // Specific NPC
+                                {type: "textMessage", text: "All done!", direction: "mainChar"},
+                            ]
+                        },
+                        {
+                            requiredFlags: ["testFlag"],
+                            events: [
+                                {type: "textMessage", text: "We've already talked!", direction: "mainChar"},
+                                {type: "removeFlag", flag: "testFlag"},
+                            ]
+                        }
+                    ]
+                }),
+                new NPC({
+                    name: "OtherNPC",
+                    pos: ex.vec(150, 100),
+                    spriteSheet: SpriteSheetRes.TestBanker,
+                    gameScene: gameScene,
+                    talking: [
+                        {
+                            requiredFlags: [],
+                            events: [
+                                {type: "textMessage", text: "I can be controlled in cutscenes too!", direction: "mainChar"},
+                                {type: "walk", tiles: 2, direction: Directions.Down, who: "OtherNPC"},
+                                {type: "textMessage", text: "Intresting...", direction: "currentDir"}
                             ]
                         }
                     ]
