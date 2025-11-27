@@ -4,11 +4,11 @@ import { GameScene, GameSceneResources } from './GameScene';
 import { TiledResource } from '@excaliburjs/plugin-tiled';
 
 class TestInterior extends GameScene {
-    constructor(player: Player) {
+    constructor() {
         const resources: GameSceneResources = {
             TiledMap: new TiledResource("./Maps/TestInterior.tmx")
         };
-        super(resources, player);
+        super(resources, null as any);
     }
 
     override onInitialize(engine: Engine): void {
@@ -18,4 +18,4 @@ class TestInterior extends GameScene {
     }
 }
 
-export default TestInterior;
+export const testInterior = new TestInterior()

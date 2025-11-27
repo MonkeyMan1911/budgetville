@@ -3,6 +3,8 @@ import { loader, Resources } from "./resources";
 import { world } from "./scenes/World";
 import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
+import test from "node:test";
+import { testInterior } from "./scenes/TestInterior";
 
 // Goal is to keep main.ts small and just enough to configure the engine
 
@@ -20,8 +22,9 @@ game.start(loader).then(() => {
 	const player = initializePlayer(enterKey, eKey);
 
 	world.player = player
+	testInterior.player = player
 
 	game.add("world", world)
-	//game.add("testInterior", new TestInterior(player))
+	game.add("testInterior", testInterior)
 	game.goToScene("world")
 })
