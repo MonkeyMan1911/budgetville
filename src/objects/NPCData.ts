@@ -47,7 +47,8 @@ export function createNPCData(gameScene: GameScene) {
                             events: [
                                 {type: "textMessage", text: "I can be controlled in cutscenes too!", direction: "mainChar"},
                                 {type: "walk", tiles: 2, direction: Directions.Down, who: "OtherNPC"},
-                                {type: "textMessage", text: "Intresting...", direction: "currentDir"}
+                                {type: "textMessage", text: "Intresting...", direction: "currentDir"},
+                                {type: "transaction", amount: 50}
                             ]
                         }
                     ]

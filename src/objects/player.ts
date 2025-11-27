@@ -183,7 +183,7 @@ export class Player extends Actor {
 		}
 	}
 
-	private endCutscene() {
+	public endCutscene() {
 		gameTextBox.clear();
 		gameTextBox.hide();
 		

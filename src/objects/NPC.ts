@@ -24,7 +24,12 @@ export interface RemoveFlagEvent {
     type: "removeFlag",
     flag: string,
 }
-export type EventObj = TalkingEvent | WalkingEvent | AddFlagEvent | RemoveFlagEvent
+export interface TransactionEvent {
+    type: "transaction",
+    amount: number,
+}
+
+export type EventObj = TalkingEvent | WalkingEvent | AddFlagEvent | RemoveFlagEvent | TransactionEvent
 
 export interface NPCTalking {
     requiredFlags: string[],
@@ -183,7 +188,6 @@ export class NPC extends ex.Actor {
                 
                 // Notify cutscene that walk is complete
                 if (this.walkCompleteCallback) {
-                    console.log("finishedwalkd")
                     this.walkCompleteCallback();
                     this.walkCompleteCallback = null;
                 }

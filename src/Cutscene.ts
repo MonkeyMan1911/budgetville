@@ -1,8 +1,9 @@
-import { NPCTalking, TalkingEvent, WalkingEvent, AddFlagEvent, RemoveFlagEvent } from "./objects/NPC";
+import { NPCTalking, TalkingEvent, WalkingEvent, AddFlagEvent, RemoveFlagEvent, TransactionEvent } from "./objects/NPC";
 import { Directions, Player } from "./objects/player";
 import { gameTextBox } from "./UI/Textbox";
 import { GameScene } from "./scenes/GameScene";
 import { NPC } from "./objects/NPC";
+import { balanceDiv } from "./UI/BalanceUI";
 
 export class Cutscene {
     private cutsceneData: NPCTalking;
@@ -54,6 +55,24 @@ export class Cutscene {
                 this.continueToNextEvent();
             }
         }
+        else if (eventObj?.type === "transaction") {
+            this.handleTransaction(eventObj as TransactionEvent)
+            this.currentEventIndex += 1;
+
+            if (this.currentEventIndex <= this.numEventIndexes) {
+                this.continueToNextEvent();
+            }
+            else {
+                this.playerRef.endCutscene()
+            }
+        }
+    }
+
+    private handleTransaction(eventObj: TransactionEvent) {
+        gameTextBox.clear()
+        gameTextBox.hide()
+        this.playerRef!.balance += eventObj.amount
+        balanceDiv.updateBalance(this.playerRef!.balance)
     }
 
     private handleTextMessage(eventObj: TalkingEvent) {
@@ -89,6 +108,9 @@ export class Cutscene {
                 // Callback when walk completes
                 if (this.currentEventIndex <= this.numEventIndexes) {
                     this.continueToNextEvent();
+                }
+                else {
+                    this.playerRef?.endCutscene()
                 }
             });
         }
