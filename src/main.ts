@@ -1,7 +1,6 @@
 import { DisplayMode, Engine, vec } from "excalibur";
 import { loader, Resources } from "./resources";
 import { world } from "./scenes/World";
-import TestInterior from "./scenes/TestInterior";
 import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
 
