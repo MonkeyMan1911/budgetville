@@ -25,8 +25,6 @@ export class GameScene extends Scene {
         super();
         this.resources = resources;
         this.player = player;
-
-        this.npcs = createNPCData(this).World.NPCs
     }
     
     override onPreLoad(loader: DefaultLoader): void {

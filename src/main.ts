@@ -3,7 +3,6 @@ import { loader, Resources } from "./resources";
 import { world } from "./scenes/World";
 import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
-import test from "node:test";
 import { testInterior } from "./scenes/TestInterior";
 
 // Goal is to keep main.ts small and just enough to configure the engine
