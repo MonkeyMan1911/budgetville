@@ -10,7 +10,7 @@ class BalanceUI {
         // Create a text element for the balance
         this.balanceText = document.createElement("span")
         this.balanceText.style.position = "absolute"
-        this.balanceText.style.left = "90%"
+        this.balanceText.style.right = "-200%"
         this.balanceText.style.top = "50%"
         this.balanceText.style.transform = "translate(-50%, -50%)"
         this.balanceText.style.fontSize = "45px"
