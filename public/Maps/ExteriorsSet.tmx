@@ -255,8 +255,8 @@
   <object id="5" name="Bank Door" type="testInterior" x="224" y="171" width="48" height="21">
    <properties>
     <property name="DirOnExit" value="up"/>
-    <property name="XOnExit" type="int" value="4"/>
-    <property name="YOnExit" type="int" value="8"/>
+    <property name="XOnExit" type="int" value="18"/>
+    <property name="YOnExit" type="int" value="11"/>
    </properties>
   </object>
   <object id="6" name="Market Door" x="367.909" y="164.909" width="16.1818" height="27.0909"/>

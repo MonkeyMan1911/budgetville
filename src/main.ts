@@ -3,7 +3,7 @@ import { loader, Resources } from "./resources";
 import { world } from "./scenes/World";
 import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
-import { testInterior } from "./scenes/TestInterior";
+import { bankInterior } from "./scenes/BankInterior";
 
 // Goal is to keep main.ts small and just enough to configure the engine
 
@@ -21,9 +21,9 @@ game.start(loader).then(() => {
 	const player = initializePlayer(enterKey, eKey);
 
 	world.player = player
-	testInterior.player = player
+	bankInterior.player = player
 
 	game.add("world", world)
-	game.add("testInterior", testInterior)
+	game.add("bankInterior", bankInterior)
 	game.goToScene("world")
 })
