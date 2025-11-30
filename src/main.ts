@@ -21,5 +21,7 @@ const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg);
 const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg);
 const player = initializePlayer(enterKey, eKey);
 
-await game.start(loader)
-game.goToScene("bankInterior", {sceneActivationData: {player}})
+(async () => {
+    await game.start(loader);
+    game.goToScene("bankInterior", {sceneActivationData: {player}});
+})();
