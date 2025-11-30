@@ -7,7 +7,8 @@ export const Resources = {
 } as const; 
 
 export const SpriteSheetRes = {
-	TestBanker: new ImageSource("./Sprites/TestNpc.png")
+	TestBanker: new ImageSource("./Sprites/TestNpc.png"),
+	BankManager: new ImageSource("./Sprites/BankManager.png")
 } as const;
 
 export const loader = new Loader();

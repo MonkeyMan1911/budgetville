@@ -3,6 +3,7 @@ import { NPC } from "./NPC";
 import * as ex from "excalibur"
 import { Directions } from "./player";
 import { GameScene } from "../scenes/GameScene";
+import { calculateDistance } from "../utils/calculateDistance";
 
 export function createNPCData(gameScene: GameScene) {
     return {
@@ -54,6 +55,17 @@ export function createNPCData(gameScene: GameScene) {
                     ]
                 })
             ]  
+        },
+        Bank: {
+            NPCs: [
+                new NPC({
+                    name: "Bank Manager",
+                    pos: ex.vec(calculateDistance(24.5), calculateDistance(3)),
+                    spriteSheet: SpriteSheetRes.BankManager,
+                    gameScene: gameScene,
+                    talking: []
+                })
+            ]
         }
     }
 }

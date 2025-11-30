@@ -145,13 +145,14 @@ export class Player extends Actor {
 			const newX = (this.currentDoor?.properties?.[1]?.value as number ?? 0) * 16 + 8;
 			const newY = (this.currentDoor?.properties?.[2]?.value as number ?? 0) * 16;
 
-			await engine.goToScene(targetScene);
 			this.enterKey.hide()
 
 			this.movementState = MovementStates.Idle;
 			this.direction = newDirection;
 			this.animationManager.goToIdle(this.direction);
-			this.pos = vec(newX, newY);
+			this.pos = vec(newX, newY); 	
+
+			engine.goToScene(targetScene, {sceneActivationData: {player: this}});  
 		}
 
 		if (keyboard.wasPressed(Keys.E) && other === "npc" && !this.currentCutscene) {

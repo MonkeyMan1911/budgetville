@@ -1,29 +1,25 @@
 import { DisplayMode, Engine, vec } from "excalibur";
 import { loader, Resources } from "./resources";
-import { world } from "./scenes/World";
+import { OverWorld } from "./scenes/OverWorld";
 import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
-import { bankInterior } from "./scenes/BankInterior";
-
-// Goal is to keep main.ts small and just enough to configure the engine
+import { BankInterior } from "./scenes/BankInterior";
 
 const game = new Engine({
 	canvasElementId: "game",
-	width: 800, // Logical width and height in game pixels
+	width: 800, 
 	height: 600,
-	displayMode: DisplayMode.FitScreenAndFill, // Display mode tells excalibur how to fill the window
-	pixelArt: true, // pixelArt will turn on the correct settings to render pixel art without jaggies or shimmering artifacts
+	displayMode: DisplayMode.FitScreenAndFill, 
+	pixelArt: true,
+	scenes: {
+		world: new OverWorld(),
+		bankInterior: new BankInterior()
+	}
 });
 
-game.start(loader).then(() => {
-	const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg);
-	const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg);
-	const player = initializePlayer(enterKey, eKey);
+const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg);
+const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg);
+const player = initializePlayer(enterKey, eKey);
 
-	world.player = player
-	bankInterior.player = player
-
-	game.add("world", world)
-	game.add("bankInterior", bankInterior)
-	game.goToScene("world")
-})
+await game.start(loader)
+game.goToScene("bankInterior", {sceneActivationData: {player}})

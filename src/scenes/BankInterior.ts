@@ -1,15 +1,22 @@
-import { BoundingBox, Engine } from 'excalibur';
-import { Player } from '../objects/player';
 import { GameScene, GameSceneResources } from './GameScene';
 import { TiledResource } from '@excaliburjs/plugin-tiled';
+import { createNPCData } from '../objects/NPCData';
+import { SceneActivationContext } from 'excalibur';
+import { Player } from '../objects/player';
 
-class BankInterior extends GameScene {
+export class BankInterior extends GameScene {
     constructor() {
         const resources: GameSceneResources = {
             TiledMap: new TiledResource("./Maps/BankInterior.tmx")
         };
-        super(resources, null as any);
+        super(resources);
+    }
+
+    onActivate(context: SceneActivationContext<{player: Player}>): void {
+        if (this.npcs.length === 0) {
+            this.npcs = createNPCData(this).Bank.NPCs;
+        }
+        console.log("bank activate")
+        super.onActivate(context);
     }
 }
-
-export const bankInterior = new BankInterior()

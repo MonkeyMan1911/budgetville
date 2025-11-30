@@ -2,26 +2,35 @@ import * as ex from "excalibur"
 
 export class UIKey extends ex.Actor {
     
-    private keySprite: ex.SpriteSheet;
-    private keyAnimation: ex.Animation;
+    private keySprite!: ex.SpriteSheet;
+    private keyAnimation!: ex.Animation;
+    private keyImg: ex.ImageSource;
 
     constructor(name: string, pos: ex.Vector, keyImg: ex.ImageSource) {
         super({
             name: name,
             pos: pos,
-            height: keyImg.height / 2 ,
-            width: keyImg.width,
             visible: false,
             z: 43
         })
+        
+        this.keyImg = keyImg;
+    }
+
+    onInitialize(engine: ex.Engine): void {
+        const frameHeight = this.keyImg.height / 2;
+        const frameWidth = this.keyImg.width;
+        
+        // Set the collider size (this sets the actor bounds)
+        this.collider.set(ex.Shape.Box(frameWidth, frameHeight));
 
         this.keySprite = ex.SpriteSheet.fromImageSource({
-            image: keyImg,
+            image: this.keyImg,
             grid: {
                 rows: 2,
                 columns: 1,
-                spriteHeight: this.height,
-                spriteWidth: this.width
+                spriteHeight: frameHeight,
+                spriteWidth: frameWidth
             }
         })
 
@@ -33,10 +42,8 @@ export class UIKey extends ex.Actor {
                 {x: 0, y: 1}
             ]
         })
-    }
-
-    onInitialize(engine: ex.Engine): void {
-        this.graphics.use(this.keyAnimation)
+        
+        this.graphics.use(this.keyAnimation);
     }
 
     setPos(pos: ex.Vector): void {
@@ -45,7 +52,6 @@ export class UIKey extends ex.Actor {
 
     show(): void {
         this.graphics.isVisible = true
-        this.graphics.use(this.keyAnimation)
     }
 
     hide(): void {
