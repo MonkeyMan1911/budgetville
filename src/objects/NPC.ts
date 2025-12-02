@@ -41,7 +41,8 @@ export interface NPCConfig {
     pos: ex.Vector,
     spriteSheet: ex.ImageSource,
     talking: NPCTalking[],
-    gameScene: GameScene
+    gameScene: GameScene,
+    z?: number
 }
 
 export class NPC extends ex.Actor {
@@ -68,7 +69,7 @@ export class NPC extends ex.Actor {
             width: 16,
             height: 16,
             collisionType: ex.CollisionType.Fixed,
-            z: 40
+            z: config.z ? config.z : 40
         })
 
         this.gameScene = config.gameScene;

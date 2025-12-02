@@ -16,7 +16,7 @@ export class BankInterior extends GameScene {
         if (this.npcs.length === 0) {
             this.npcs = createNPCData(this).Bank.NPCs;
         }
-        console.log("bank activate")
+
         super.onActivate(context);
     }
 }

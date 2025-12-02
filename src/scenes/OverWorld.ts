@@ -1,4 +1,4 @@
-import { Engine, SceneActivationContext } from 'excalibur';
+import { SceneActivationContext } from 'excalibur';
 import { createNPCData } from '../objects/NPCData';
 import { Player } from '../objects/player';
 import { GameScene } from './GameScene';

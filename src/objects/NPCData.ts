@@ -63,7 +63,8 @@ export function createNPCData(gameScene: GameScene) {
                     pos: ex.vec(calculateDistance(24.5), calculateDistance(3)),
                     spriteSheet: SpriteSheetRes.BankManager,
                     gameScene: gameScene,
-                    talking: []
+                    talking: [],
+                    z: 7 
                 })
             ]
         }
