@@ -23,5 +23,5 @@ const player = initializePlayer(enterKey, eKey);
 
 (async () => {
     await game.start(loader);
-    game.goToScene("bankInterior", {sceneActivationData: {player}});
+    game.goToScene("world", {sceneActivationData: {player}});
 })();
