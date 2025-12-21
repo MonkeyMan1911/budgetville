@@ -17,7 +17,7 @@ class BalanceUI {
         this.balanceText.style.color = "black"
         this.balanceText.style.fontWeight = "bold"
         this.balanceText.style.zIndex = "10"
-        this.balanceText.style.fontFamily = `"Jersey 10", sans-serif`
+        this.balanceText.style.fontFamily = `"PixelFont", sans-serif`
         
         this.element.appendChild(this.balanceText)
     }

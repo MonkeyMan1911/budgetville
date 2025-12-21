@@ -3,11 +3,14 @@ import { Directions, MovementStates } from "./player";
 import { AnimationManager } from "../Animations/AnimationManager";
 import { calculateDistance } from "../utils/calculateDistance";
 import { GameScene } from "../scenes/GameScene";
+import { ChoiceBoxConfig } from "../UI/ChoiceBox";
 
 export interface TalkingEvent {
     type: "textMessage",
     text: string,
     direction: Directions | "mainChar" | "currentDir"
+    choices?: ChoiceBoxConfig[],
+    requireFlags?: string[]
 }
 export interface WalkingEvent {
     type: "walk",

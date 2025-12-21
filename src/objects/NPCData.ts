@@ -46,10 +46,13 @@ export function createNPCData(gameScene: GameScene) {
                         {
                             requiredFlags: [],
                             events: [
-                                {type: "textMessage", text: "I can be controlled in cutscenes too!", direction: "mainChar"},
-                                {type: "walk", tiles: 2, direction: Directions.Down, who: "OtherNPC"},
-                                {type: "textMessage", text: "Intresting...", direction: "currentDir"},
-                                {type: "transaction", amount: 50}
+                                {type: "textMessage", text: "Choose a choice", direction: "mainChar", choices: [
+                                    {content: "Choice 1", flag: "choice1"},
+                                    {content: "Choice 2", flag: "choice2"}
+                                ]},
+                                {type: "textMessage", text: "shld skip", direction: "currentDir"},
+                                {type: "textMessage", text: "You chose choice 1", direction: "currentDir", requireFlags: ["choice1"]},
+                                {type: "textMessage", text: "You chose choice 2", direction: "currentDir", requireFlags: ["choice2"]}
                             ]
                         }
                     ]
@@ -57,10 +60,10 @@ export function createNPCData(gameScene: GameScene) {
             ]  
         },
         Bank: {
-            NPCs: [
+            NPCs: [ 
                 new NPC({
                     name: "Bank Manager",
-                    pos: ex.vec(calculateDistance(24.5), calculateDistance(3)),
+                    pos: ex.vec(calculateDistance(24.5), calculateDistance(2.8)),
                     spriteSheet: SpriteSheetRes.BankManager,
                     gameScene: gameScene,
                     talking: [],

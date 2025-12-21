@@ -53,6 +53,7 @@ export class Player extends Actor {
 	private currentNpc: NPC | null = null;
 
 	private currentCutscene: Cutscene | null = null;
+	public cutsceneFlags: string[] = [];
 
 	public balance: number = 0.0
 
@@ -169,6 +170,10 @@ export class Player extends Actor {
 		}
 
 		if (keyboard.wasPressed(Keys.Enter) && other === "textbox") {
+			if (this.currentCutscene && this.currentCutscene.isWaitingForChoice()) {
+				return	
+			}
+
 			if (gameTextBox.typing) {
 				gameTextBox.skipTyping();
 				return;

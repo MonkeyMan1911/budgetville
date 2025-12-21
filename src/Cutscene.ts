@@ -4,6 +4,7 @@ import { gameTextBox } from "./UI/Textbox";
 import { GameScene } from "./scenes/GameScene";
 import { NPC } from "./objects/NPC";
 import { balanceDiv } from "./UI/BalanceUI";
+import { DialogueMenu } from "./UI/DialogueMenu";
 
 export class Cutscene {
     private cutsceneData: NPCTalking;
@@ -12,6 +13,7 @@ export class Cutscene {
     private playerRef: Player | null = null;
     private gameSceneRef: GameScene | null = null;
     private initiatingNPC: NPC | null = null;
+    private currentDialogueMenu: DialogueMenu | null = null;    
 
     constructor(cutsceneData: NPCTalking) {
         this.cutsceneData = cutsceneData;
@@ -76,9 +78,44 @@ export class Cutscene {
     }
 
     private handleTextMessage(eventObj: TalkingEvent) {
+
+        if (eventObj.requireFlags) {
+            for (const flag of eventObj.requireFlags) {
+                //console.log(window.localStorage.getItem(flag)) TODO: String to bool or smth idek bruh
+                if (!window.localStorage.getItem(flag)) {
+                    if (this.currentEventIndex <= this.numEventIndexes) {
+                        this.continueToNextEvent();
+                    } else {
+                        this.playerRef?.endCutscene();
+                    }
+
+                    return;
+                }
+            }
+        }
+
         gameTextBox.clear();
         gameTextBox.addText(eventObj.text);
         gameTextBox.show();
+
+        if (eventObj.choices) {
+            const dialogueMenu = new DialogueMenu({
+                numChoices: eventObj.choices.length,
+                choicesContent: eventObj.choices,
+                playerRef: this.playerRef!,
+                onChoiceMade: () => {
+                    this.currentDialogueMenu = null;
+                    this.currentEventIndex += 1;
+                    
+                    if (this.currentEventIndex <= this.numEventIndexes) {
+                        this.continueToNextEvent()  
+                    } 
+                    else {
+                        this.playerRef?.endCutscene();
+                    }
+                }
+            })
+        }
         
         // Calculate which direction the NPC should face
         if (this.initiatingNPC) {
@@ -154,6 +191,10 @@ export class Cutscene {
         else {
             return dy > 0 ? Directions.Down : Directions.Up;
         }
+    }
+
+    public isWaitingForChoice(): boolean {
+        return this.currentDialogueMenu !== null && this.currentDialogueMenu.isWaitingForChoice()
     }
 
     isComplete(): boolean {
