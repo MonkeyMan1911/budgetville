@@ -52,7 +52,7 @@ export class Player extends Actor {
 	private collidingWithNpc: boolean = false;
 	private currentNpc: NPC | null = null;
 
-	private currentCutscene: Cutscene | null = null;
+	public currentCutscene: Cutscene | null = null;
 	public cutsceneFlags: string[] = [];
 
 	public balance: number = 0.0
@@ -170,16 +170,21 @@ export class Player extends Actor {
 		}
 
 		if (keyboard.wasPressed(Keys.Enter) && other === "textbox") {
+			// Don't allow Enter to progress if waiting for a choice
 			if (this.currentCutscene && this.currentCutscene.isWaitingForChoice()) {
 				return	
 			}
 
+			// Skip typing animation
 			if (gameTextBox.typing) {
 				gameTextBox.skipTyping();
 				return;
 			}
 
+			// Progress to next event
 			if (this.currentCutscene && !this.currentCutscene.isComplete()) {
+				// Increment the index before continuing
+				this.currentCutscene.incrementIndex();
 				this.currentCutscene.continueToNextEvent();
 			}
 			else if (this.currentCutscene) {

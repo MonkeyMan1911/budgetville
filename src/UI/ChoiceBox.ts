@@ -8,9 +8,9 @@ export interface ChoiceBoxConfig {
 export class ChoiceBox {
     private element: HTMLElement;
     public flag: string;
-    private onClickCallback: () => void;
+    private onClickCallback: (flag: string) => void;
 
-    constructor(boxNum: number, config: ChoiceBoxConfig, playerRef: Player, onClickCallBack: () => void) {
+    constructor(boxNum: number, config: ChoiceBoxConfig, playerRef: Player, onClickCallBack: (flag: string) => void) {
         this.element = document.getElementById(`choice-${boxNum}`)!
         this.element.innerText = config.content
         this.flag = config.flag
@@ -34,8 +34,10 @@ export class ChoiceBox {
     handleClick(playerRef: Player) {
         playerRef.cutsceneFlags.push(this.flag)
         window.localStorage.setItem(this.flag, JSON.stringify(true));
-        this.onClickCallback()
-
+        
         console.log(playerRef.cutsceneFlags)
+        
+        // Call the callback with the flag name so it can be tracked
+        this.onClickCallback(this.flag)
     }
 }

@@ -13,7 +13,8 @@ export class Cutscene {
     private playerRef: Player | null = null;
     private gameSceneRef: GameScene | null = null;
     private initiatingNPC: NPC | null = null;
-    private currentDialogueMenu: DialogueMenu | null = null;    
+    private currentDialogueMenu: DialogueMenu | null = null;
+    private temporaryFlags: Set<string> = new Set(); // Track flags created during this cutscene
 
     constructor(cutsceneData: NPCTalking) {
         this.cutsceneData = cutsceneData;
@@ -25,6 +26,7 @@ export class Cutscene {
         this.gameSceneRef = gameScene;
         this.initiatingNPC = initiatingNPC || null;
         this.currentEventIndex = 0;
+        this.temporaryFlags.clear(); // Clear temporary flags at start
         this.continueToNextEvent();
     }
 
@@ -35,11 +37,9 @@ export class Cutscene {
         
         if (eventObj?.type === "textMessage") {
             this.handleTextMessage(eventObj as TalkingEvent);
-            this.currentEventIndex += 1;
         }    
         else if (eventObj?.type === "walk") {
             this.handleWalk(eventObj as WalkingEvent);
-            this.currentEventIndex += 1;
         }
         else if (eventObj?.type === "addFlag") {
             this.handleAddFlag(eventObj as AddFlagEvent);
@@ -81,8 +81,10 @@ export class Cutscene {
 
         if (eventObj.requireFlags) {
             for (const flag of eventObj.requireFlags) {
-                //console.log(window.localStorage.getItem(flag)) TODO: String to bool or smth idek bruh
                 if (!window.localStorage.getItem(flag)) {
+                    // Skip this message if required flags aren't met
+                    this.currentEventIndex += 1;
+                    
                     if (this.currentEventIndex <= this.numEventIndexes) {
                         this.continueToNextEvent();
                     } else {
@@ -99,20 +101,13 @@ export class Cutscene {
         gameTextBox.show();
 
         if (eventObj.choices) {
-            const dialogueMenu = new DialogueMenu({
+            this.currentDialogueMenu = new DialogueMenu({
                 numChoices: eventObj.choices.length,
                 choicesContent: eventObj.choices,
                 playerRef: this.playerRef!,
                 onChoiceMade: () => {
                     this.currentDialogueMenu = null;
-                    this.currentEventIndex += 1;
-                    
-                    if (this.currentEventIndex <= this.numEventIndexes) {
-                        this.continueToNextEvent()  
-                    } 
-                    else {
-                        this.playerRef?.endCutscene();
-                    }
+                    // Don't increment here - let the Enter key handling do it
                 }
             })
         }
@@ -142,6 +137,9 @@ export class Cutscene {
         
         if (walker) {
             walker.walkForCutscene(eventObj, () => {
+                // Increment index when walk completes
+                this.currentEventIndex += 1;
+                
                 // Callback when walk completes
                 if (this.currentEventIndex <= this.numEventIndexes) {
                     this.continueToNextEvent();
@@ -155,6 +153,7 @@ export class Cutscene {
 
     private handleAddFlag(eventObj: AddFlagEvent) {
         window.localStorage.setItem(eventObj.flag, eventObj.value);
+        // Don't track this flag as temporary - it's a story flag
     }
 
     private handleRemoveFlag(eventObj: RemoveFlagEvent) {
@@ -197,11 +196,25 @@ export class Cutscene {
         return this.currentDialogueMenu !== null && this.currentDialogueMenu.isWaitingForChoice()
     }
 
+    public incrementIndex(): void {
+        this.currentEventIndex += 1;
+    }
+
+    public addTemporaryFlag(flag: string): void {
+        this.temporaryFlags.add(flag);
+    }
+
     isComplete(): boolean {
         return this.currentEventIndex > this.numEventIndexes;
     }
 
     reset() {
+        // Clean up temporary choice flags
+        this.temporaryFlags.forEach(flag => {
+            window.localStorage.removeItem(flag);
+        });
+        this.temporaryFlags.clear();
+        
         this.currentEventIndex = 0;
         this.playerRef = null;
         this.gameSceneRef = null;
