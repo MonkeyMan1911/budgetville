@@ -59,14 +59,16 @@ export class Player extends Actor {
 
 	// For cutscene walking
 	private targetPos: ex.Vector = ex.Vector.Zero;
-	private speed: number = 1.3;
+	private speed: number = 4;
 	private moveDir: ex.Vector = ex.Vector.Zero;
 	private walkCompleteCallback: (() => void) | null = null;
+
+	private happinessLevel = 100
 
 	constructor(enterKey: UIKey, eKey: UIKey) {
 		super({
 			name: 'Player',
-			pos: vec(192, 192),
+			pos: vec(calculateDistance(11), calculateDistance(15)),
 			width: 16,
 			height: 16,
 			collisionType: CollisionType.Active,
@@ -84,7 +86,7 @@ export class Player extends Actor {
 		const keyboard = engine.input.keyboard
 
 		let moveDir: Vector = Vector.Zero
-		let speed: number = 1.3
+		let speed: number = 2
 
 		const ignoredKeys: Keys[] = [Keys.ShiftLeft, Keys.ShiftRight]
 

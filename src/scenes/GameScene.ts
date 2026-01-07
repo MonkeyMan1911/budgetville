@@ -7,7 +7,6 @@ import { TiledResource } from "@excaliburjs/plugin-tiled";
 import { NPC } from "../objects/NPC";
 import { balanceDiv } from "../UI/BalanceUI";
 
-
 export interface GameSceneResources {
     TiledMap: TiledResource
     NPCSpriteSheets?: ex.ImageSource[]
@@ -50,6 +49,14 @@ export class GameScene extends Scene {
         this.add(this.player.eKey)
 
        this.resources.TiledMap.addToScene(context.engine.currentScene, {pos: ex.vec(0, 0)})
+
+        const decorLayers = this.resources.TiledMap.getTileLayers();
+        
+        decorLayers.forEach(layer => {
+            if (layer.name.includes("Decor")) {
+                layer.tilemap.z = 50
+            }
+        });
 
         balanceDiv.show()
         balanceDiv.updateBalance(this.player.balance)

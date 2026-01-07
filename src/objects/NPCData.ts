@@ -67,7 +67,7 @@ export function createNPCData(gameScene: GameScene) {
                     spriteSheet: SpriteSheetRes.BankManager,
                     gameScene: gameScene,
                     talking: [],
-                    z: 7 
+                    z: 51
                 })
             ]
         }

@@ -11,7 +11,7 @@ export class UIKey extends ex.Actor {
             name: name,
             pos: pos,
             visible: false,
-            z: 43
+            z: 52
         })
         
         this.keyImg = keyImg;
