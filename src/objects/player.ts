@@ -68,7 +68,7 @@ export class Player extends Actor {
 	constructor(enterKey: UIKey, eKey: UIKey) {
 		super({
 			name: 'Player',
-			pos: vec(calculateDistance(11), calculateDistance(15)),
+			pos: vec(calculateDistance(33), calculateDistance(15)),
 			width: 16,
 			height: 16,
 			collisionType: CollisionType.Active,

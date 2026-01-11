@@ -9,14 +9,15 @@ export class BankInterior extends GameScene {
         const resources: GameSceneResources = {
             TiledMap: new TiledResource("./Maps/BankInterior.tmx")
         };
-        super(resources);
+        // Don't use chunking for small interior maps
+        super(resources, false); // Pass false to disable chunking
     }
 
-    onActivate(context: SceneActivationContext<{player: Player}>): void {
+    async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
         if (this.npcs.length === 0) {
             this.npcs = createNPCData(this).Bank.NPCs;
         }
 
-        super.onActivate(context);
+        await super.onActivate(context);
     }
 }

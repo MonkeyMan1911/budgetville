@@ -9,14 +9,15 @@ export class OverWorld extends GameScene {
         const resources = {
             TiledMap: new TiledResource("./Maps/ExteriorsSet.tmx"),
         };
-        super(resources);
+        // Enable chunking for the large overworld map (100x100 tiles)
+        super(resources, true); // Pass true to enable chunking
     }
 
-    onActivate(context: SceneActivationContext<{player: Player}>): void {
+    async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
         if (this.npcs.length === 0) {
             this.npcs = createNPCData(this).World.NPCs;
         }
         
-        super.onActivate(context);
+        await super.onActivate(context);
     }
 }

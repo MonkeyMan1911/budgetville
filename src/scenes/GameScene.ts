@@ -1,4 +1,4 @@
-import { DefaultLoader, Engine, ExcaliburGraphicsContext, Scene, SceneActivationContext } from "excalibur";
+import { DefaultLoader, Scene, SceneActivationContext } from "excalibur";
 import * as ex from "excalibur"
 import { Player } from "../objects/player";
 import { resourcesLoader } from "../utils/resourceLoader";
@@ -6,6 +6,7 @@ import DoorObject from "../objects/DoorObject";
 import { TiledResource } from "@excaliburjs/plugin-tiled";
 import { NPC } from "../objects/NPC";
 import { balanceDiv } from "../UI/BalanceUI";
+import { ChunkedTiledMap } from "./ChunkedTiledMap";
 
 export interface GameSceneResources {
     TiledMap: TiledResource
@@ -13,21 +14,23 @@ export interface GameSceneResources {
 }
 
 export class GameScene extends Scene {
-
     resources: GameSceneResources;
     player: Player | undefined;
     npcs: NPC[] = [];
+    private chunkedMap: ChunkedTiledMap | null = null;
+    private useChunking: boolean = false; // Set to true to enable chunking
 
-    constructor(resources: GameSceneResources) {
+    constructor(resources: GameSceneResources, useChunking: boolean = false) {
         super();
         this.resources = resources;
+        this.useChunking = useChunking;
     }
     
     override onPreLoad(loader: DefaultLoader): void {
         resourcesLoader(this.resources, loader);
     }
 
-    onActivate(context: SceneActivationContext<{player: Player}>): void {
+    async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
         this.player = context.data!.player
 
         // Add door objects to the scene
@@ -48,17 +51,47 @@ export class GameScene extends Scene {
         this.add(this.player.enterKey)
         this.add(this.player.eKey)
 
-       this.resources.TiledMap.addToScene(context.engine.currentScene, {pos: ex.vec(0, 0)})
-
-        const decorLayers = this.resources.TiledMap.getTileLayers();
-        
-        decorLayers.forEach(layer => {
-            if (layer.name.includes("Decor")) {
-                layer.tilemap.z = 50
-            }
-        });
+        if (this.useChunking) {
+            // Use chunked loading for large maps
+            this.chunkedMap = new ChunkedTiledMap({
+                tiledResource: this.resources.TiledMap,
+                chunkSize: 16, // 16x16 tiles per chunk (adjust based on your needs)
+                renderDistance: 2 // Load 2 chunks in each direction around player
+            });
+            
+            await this.chunkedMap.initialize(this);
+            
+            // Do initial load around player position
+            this.chunkedMap.update(this.player.pos);
+        } else {
+            // Load entire map at once (original behavior)
+            this.resources.TiledMap.addToScene(context.engine.currentScene, {pos: ex.vec(0, 0)})
+            
+            // Set z-index of decor layers
+            const decorLayers = this.resources.TiledMap.getTileLayers();
+            decorLayers.forEach(layer => {
+                if (layer.name.includes("Decor")) {
+                    layer.tilemap.z = 50;
+                }
+            });
+        }
 
         balanceDiv.show()
         balanceDiv.updateBalance(this.player.balance)
+    }
+
+    override onPreUpdate(engine: ex.Engine, delta: number): void {
+        // Update chunked map based on player position
+        if (this.chunkedMap && this.player) {
+            this.chunkedMap.update(this.player.pos);
+        }
+    }
+
+    override onDeactivate(context: ex.SceneActivationContext): void {
+        // Clean up chunks when leaving scene
+        if (this.chunkedMap) {
+            this.chunkedMap.destroy();
+            this.chunkedMap = null;
+        }
     }
 }
