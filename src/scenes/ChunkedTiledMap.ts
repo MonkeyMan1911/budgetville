@@ -64,7 +64,7 @@ export class ChunkedTiledMap {
     }
 
     private getChunkKey(chunkX: number, chunkY: number): string {
-        return `${chunkX},${chunkY}`;
+        return `${chunkX},${chunkY}`;   
     }
 
     private worldToChunk(worldX: number, worldY: number): { x: number, y: number } {
@@ -119,15 +119,31 @@ export class ChunkedTiledMap {
                     if (originalTile) {
                         // Create a new tile in the chunk with the same graphic
                         const chunkTile = chunkTileMap.getTile(localX, localY);
-                        if (chunkTile && originalTile.getGraphics().length > 0) {
-                            chunkTile.clearGraphics();
-                            originalTile.getGraphics().forEach(graphic => {
-                                chunkTile.addGraphic(graphic);
-                            });
+                        if (chunkTile) {
+                            // Copy graphics
+                            if (originalTile.getGraphics().length > 0) {
+                                chunkTile.clearGraphics();
+                                originalTile.getGraphics().forEach(graphic => {
+                                    chunkTile.addGraphic(graphic);
+                                });
+                            }
                             
-                            // Set solid property
+                            // Copy collider - this is the key fix!
                             if (originalTile.solid) {
                                 chunkTile.solid = true;
+                            }
+                            
+                            // Copy custom collider if it exists
+                            const originalCollider = originalTile.getColliders()[0]
+                            if (originalCollider) {
+                                // Clone the collider to the new tile
+                                const boxCollider = ex.Shape.Box(
+                                    originalCollider.bounds.width,
+                                    originalCollider.bounds.height,
+                                    ex.Vector.Half,
+                                    originalCollider.offset
+                                )
+                                chunkTile.addCollider(boxCollider)
                             }
                         }
                     }
