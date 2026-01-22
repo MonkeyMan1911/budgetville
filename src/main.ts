@@ -4,6 +4,7 @@ import { OverWorld } from "./scenes/OverWorld";
 import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
 import { BankInterior } from "./scenes/BankInterior";
+import { stockMarket } from "./systems/StockMarket";
 
 const game = new Engine({
 	canvasElementId: "game",
@@ -23,5 +24,6 @@ const player = initializePlayer(enterKey, eKey);
 
 (async () => {
     await game.start(loader);
-    game.goToScene("world", {sceneActivationData: {player}});
+	stockMarket.start()
+	game.goToScene("world", {sceneActivationData: {player}});
 })();
