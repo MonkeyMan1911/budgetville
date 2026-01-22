@@ -78,7 +78,7 @@ export class ChunkedTiledMap {
 
     private createChunk(chunkX: number, chunkY: number): Chunk {
         const chunk: Chunk = {
-            x: chunkX,
+            x: chunkX, 
             y: chunkY,
             tileMaps: [],
             isLoaded: false

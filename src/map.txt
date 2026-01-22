@@ -1,0 +1,15 @@
+[NORTH]
+
+┌──────────────────┬──────────────────┐
+│ Investments /    │ Suburbs          │
+│ Banking /        │                  │
+│ Businesses       │                  │
+├──────────────────┼──────────────────┤
+│ Retail / Leisure │ Transit Hub      │
+│                  │ (CENTER)         │
+├──────────────────┼──────────────────┤
+│ Apartments       │ Industry & Jobs  │
+│                  │                  │
+└──────────────────┴──────────────────┘
+
+[SOUTH]
