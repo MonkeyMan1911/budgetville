@@ -1,5 +1,5 @@
 // All company names are fictional and used for simulation purposes only
-type StockNames = "ironcliff" | "northway" | "clearhaven" | "redfield" | "bluecrest"
+export type StockNames = "ironcliff" | "northway" | "clearhaven" | "redfield" | "bluecrest"
 type StockTickers = "icg" | "nws" | "chc" | "rfi" | "bch"
 interface StockObj {
   name: StockNames

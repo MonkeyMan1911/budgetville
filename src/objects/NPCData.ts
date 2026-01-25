@@ -48,7 +48,9 @@ export function createNPCData(gameScene: GameScene) {
                             events: [
                                 {type: "textMessage", text: "Choose a choice", direction: "mainChar", choices: [
                                     {content: "Choice 1", flag: "choice1"},
-                                    {content: "Choice 2", flag: "choice2"}
+                                    {content: "Choice 2", flag: "choice2"},
+                                    {content: "Choice 1", flag: "choice3"},
+                                    {content: "Choice 2", flag: "choice4"}
                                 ]},
                                 {type: "textMessage", text: "You chose choice 1", direction: "currentDir", requireFlags: ["choice1"]},
                                 {type: "textMessage", text: "You chose choice 2", direction: "currentDir", requireFlags: ["choice2"]},

@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="./src/styles/TextboxStyles.css">
 		<link rel="stylesheet" href="./src/styles/Balance.css">
 		<link rel="stylesheet" href="./src/styles/ChoiceBtnStyles.css">
+		<link rel="stylesheet" href="./src/styles/StockMarketStyles.css">
 
 		<title>Budgetville</title>
 	</head>
@@ -24,6 +25,17 @@
 			</div>
 			<div id="textbox" class="hide">
 				<img id="textbox-arrow" src="./UI Images/NextDialouge.png">
+			</div>
+			<div id="stock-market-main" class="hide">
+				<div class="select-wrapper">
+					<select id="stock-selector">
+						<option value="ironcliff" class="stock-choice">Ironcliff</option>
+						<option value="northway" class="stock-choice">Northway</option>
+						<option value="clearhaven" class="stock-choice">Clearhaven</option>
+						<option value="redfield" class="stock-choice">Redfield</option>
+						<option value="bluecrest" class="stock-choice">Bluecrest</option>
+					</select>
+				</div>
 			</div>
 			<canvas id="game"></canvas>
 		</main>
