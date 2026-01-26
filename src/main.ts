@@ -5,6 +5,7 @@ import { initializePlayer, Player } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
 import { BankInterior } from "./scenes/BankInterior";
 import { stockMarket } from "./systems/StockMarket";
+import { gameStockMarketUi } from "./UI/StockMarketUI";
 
 const game = new Engine({
 	canvasElementId: "game",
@@ -24,25 +25,7 @@ const player = initializePlayer(enterKey, eKey);
 
 (async () => {
     await game.start(loader);
-
-	const elem = document.documentElement;
-	
-	if (elem.requestFullscreen) {
-		elem.requestFullscreen()
-	//@ts-expect-error
-	} else if (elem.webkitRequestFullscreen) {
-		//@ts-expect-error
-		elem.webkitRequestFullscreen();
-	//@ts-expect-error
-	} else if (elem.mozRequestFullScreen) {
-		//@ts-expect-error
-		elem.mozRequestFullScreen();
-	//@ts-expect-error
-	} else if (elem.msRequestFullscreen) {
-		//@ts-expect-error
-		elem.msRequestFullscreen();
-	}
-
 	stockMarket.start()
+	gameStockMarketUi.initialize()
 	game.goToScene("world", {sceneActivationData: {player}});
 })();
