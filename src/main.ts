@@ -29,18 +29,10 @@ function updateVH() {
   );
 }
 
-async function startGame() {
-  try {
-    await screen.orientation.lock("landscape");
-  } catch {}
-}
-
-
 (async () => {
 	updateVH();
 	window.addEventListener("resize", updateVH);
     await game.start(loader);
-	startGame()
 
 	const elem = document.documentElement;
 	
