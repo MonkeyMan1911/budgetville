@@ -22,8 +22,26 @@ const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg);
 const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg);
 const player = initializePlayer(enterKey, eKey);
 
+function updateVH() {
+  document.documentElement.style.setProperty(
+    "--vh",
+    `${window.innerHeight * 0.01}px`
+  );
+}
+
+async function startGame() {
+  try {
+    await screen.orientation.lock("landscape");
+  } catch {}
+}
+
+
 (async () => {
+	updateVH();
+	window.addEventListener("resize", updateVH);
     await game.start(loader);
+	startGame()
+
 	const elem = document.documentElement;
 	
 	if (elem.requestFullscreen) {
