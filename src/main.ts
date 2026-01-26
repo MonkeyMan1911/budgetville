@@ -24,24 +24,23 @@ const player = initializePlayer(enterKey, eKey);
 
 (async () => {
     await game.start(loader);
-
-	    const elem = document.documentElement;
-    
-    if (elem.requestFullscreen) {
-        elem.requestFullscreen();
+	const elem = document.documentElement;
+	
+	if (elem.requestFullscreen) {
+		elem.requestFullscreen()
 	//@ts-expect-error
-    } else if (elem.webkitRequestFullscreen) {
+	} else if (elem.webkitRequestFullscreen) {
 		//@ts-expect-error
-        elem.webkitRequestFullscreen(); 
+		elem.webkitRequestFullscreen();
 	//@ts-expect-error
-    } else if (elem.mozRequestFullScreen) {
+	} else if (elem.mozRequestFullScreen) {
 		//@ts-expect-error
-        elem.mozRequestFullScreen();
+		elem.mozRequestFullScreen();
 	//@ts-expect-error
-    } else if (elem.msRequestFullscreen) {
+	} else if (elem.msRequestFullscreen) {
 		//@ts-expect-error
-        elem.msRequestFullscreen();
-    }
+		elem.msRequestFullscreen();
+	}
 
 	stockMarket.start()
 	game.goToScene("world", {sceneActivationData: {player}});

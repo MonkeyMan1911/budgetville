@@ -1,3 +1,4 @@
+//resources.ts
 import { ImageSource, Loader, Resource } from "excalibur";
 
 export const Resources = {
@@ -14,7 +15,7 @@ export const SpriteSheetRes = {
 export const loader = new Loader();
 
 loader.backgroundColor = "black"
-// TODO: Create logo, convert to base64 and use loader.logo to set it
+
 loader.startButtonFactory = () => {
 	let startButton = document.createElement("button")
 	startButton.textContent = "Start Game"	
@@ -24,6 +25,7 @@ loader.startButtonFactory = () => {
 	startButton.style.width = "25vw"
 	startButton.style.borderRadius = "20px"
 	startButton.style.backgroundColor = "#37de61"
+	startButton.style.cursor = "pointer"
 	return startButton
 }
 
