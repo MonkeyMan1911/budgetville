@@ -3,22 +3,3 @@
     background-color: black;
   }
 }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-#game {
-  width: 100vw;
-  height: calc(var(--vh) * 100);
-  background: black;
-}
-#game {
-  padding:
-    env(safe-area-inset-top)
-    env(safe-area-inset-right)
-    env(safe-area-inset-bottom)
-    env(safe-area-inset-left);
-}
