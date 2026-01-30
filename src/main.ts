@@ -1,7 +1,7 @@
 import { DisplayMode, Engine, vec } from "excalibur";
 import { loader, Resources } from "./resources";
 import { OverWorld } from "./scenes/OverWorld";
-import { initializePlayer, Player } from "./objects/player";
+import { initializePlayer } from "./objects/player";
 import { UIKey } from "./objects/UIKey";
 import { BankInterior } from "./scenes/BankInterior";
 import { stockMarket } from "./systems/StockMarket";
