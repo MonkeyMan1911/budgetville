@@ -1,5 +1,5 @@
-import { Actor, Collider, CollisionContact, Engine, Side, vec, Keys, Vector, CollisionType } from "excalibur";
 import * as ex from "excalibur"
+import { Actor, Collider, CollisionContact, Engine, Side, vec, Keys, Vector, CollisionType } from "excalibur";
 import { Resources } from "../resources";
 import { AnimationManager } from "../Animations/AnimationManager";
 import DoorObject from "./DoorObject";
@@ -9,6 +9,7 @@ import { gameTextBox } from "../UI/Textbox";
 import { Cutscene } from "../Cutscene";
 import { WalkingEvent } from "./NPC";
 import { calculateDistance } from "../utils/calculateDistance";
+import { PortfolioStockDetails, StockNames, StockPurchaseDetails } from "../systems/StockMarket";
 
 export enum Directions {
 	Up = "up",
@@ -36,7 +37,7 @@ export class Player extends Actor {
 	public canMove: boolean = true
 	public direction: Directions = Directions.Down
 	private movementState: MovementStates = MovementStates.Idle
-	animationManager: AnimationManager = new AnimationManager({
+	public animationManager: AnimationManager = new AnimationManager({
 		spritesheet: this.spriteSheet,
 		actor: this
 	})
@@ -55,7 +56,106 @@ export class Player extends Actor {
 	public currentCutscene: Cutscene | null = null;
 	public cutsceneFlags: string[] = [];
 
-	public balance: number = 0.0
+	// Inventory
+	private balance: number = 0.0
+	public getBalance() { return this.balance }
+	public updateBalance(amount: number) { this.balance += amount }
+	private portfolio: Record<StockNames, PortfolioStockDetails> = {
+		"ironcliff": {
+			"quantity": 0,
+			"purchases": []
+		},
+		"bluecrest": {
+			"quantity": 0,
+			"purchases": []
+		},
+		"clearhaven": {
+			"quantity": 0,
+			"purchases": []
+		},
+		"northway": {
+			"quantity": 0,
+			"purchases": []
+		},
+		"redfield": {
+			"quantity": 0,
+			"purchases": []
+		}
+	}
+	public addStockPurchase(stock: StockNames, purchaseDetails: StockPurchaseDetails) {
+		this.portfolio[stock].purchases.push(purchaseDetails)
+		this.portfolio[stock].quantity += purchaseDetails.quantity
+	}
+	public sellStocks(stock: StockNames, quantity: number, currentPrice: number): { profit: number, soldShares: number } {
+		let remainingToSell = quantity
+		let totalCost = 0
+		let totalSold = 0
+
+		// FIFO: Sell oldest purchases first
+		while (remainingToSell > 0 && this.portfolio[stock].purchases.length > 0) {
+			const oldestPurchase = this.portfolio[stock].purchases[0]
+			
+			if (oldestPurchase.quantity <= remainingToSell) {
+				// Sell entire purchase
+				totalCost += oldestPurchase.quantity * oldestPurchase.price
+				totalSold += oldestPurchase.quantity
+				remainingToSell -= oldestPurchase.quantity
+				
+				// Remove this purchase completely
+				this.portfolio[stock].purchases.shift()
+			} else {
+				// Sell partial purchase
+				totalCost += remainingToSell * oldestPurchase.price
+				totalSold += remainingToSell
+				
+				// Reduce quantity in this purchase
+				oldestPurchase.quantity -= remainingToSell
+				remainingToSell = 0
+			}
+		}
+
+		const totalRevenue = totalSold * currentPrice
+		const profit = totalRevenue - totalCost
+
+		this.portfolio[stock].quantity -= totalSold
+		this.balance += totalRevenue
+
+		return { profit, soldShares: totalSold }
+	}
+	public getStockQuantity(stock: StockNames): number {
+		return this.portfolio[stock].quantity
+	}
+	// Helper: Get average cost basis for a stock
+	public getAverageCostBasis(stock: StockNames): number {
+		const purchases = this.portfolio[stock].purchases
+		if (purchases.length === 0) return 0
+
+		let totalShares = 0
+		let totalCost = 0
+
+		purchases.forEach(purchase => {
+			totalShares += purchase.quantity
+			totalCost += purchase.quantity * purchase.price
+		})
+
+		return totalCost / totalShares
+	}
+	// Helper: Get unrealized profit/loss for a stock
+	public getUnrealizedProfitLoss(stock: StockNames, currentPrice: number): number {
+		const purchases = this.portfolio[stock].purchases
+		if (purchases.length === 0) return 0
+
+		let totalCost = 0
+		let totalShares = 0
+
+		purchases.forEach(purchase => {
+			totalCost += purchase.quantity * purchase.price
+			totalShares += purchase.quantity
+		})
+
+		const currentValue = totalShares * currentPrice
+		return currentValue - totalCost
+	}
 
 	// For cutscene walking
 	private targetPos: ex.Vector = ex.Vector.Zero;

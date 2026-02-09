@@ -1,16 +1,19 @@
 #stock-market-main {
-    width: 75%;
-    height: 75%;
+    width: min(90%, 1200px);
+    height: min(85%, 800px);
+    max-height: 90vh;
 
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 
+    z-index: 100;
+
     background-color: rgb(238, 200, 170);
     border-radius: 10px;
-    border: 7px solid rgb(68, 53, 32);
-    padding: 1%;
+    border: clamp(3px, 0.5vw, 7px) solid rgb(68, 53, 32);
+    padding: clamp(8px, 1%, 16px);
 
     font-family: "PixelFont", sans-serif;
 
@@ -18,11 +21,16 @@
     flex-direction: column;
 }
 
+#stock-market-main.hide {
+    display: none;
+}
+
 .select-wrapper {
     width: 100%;
-    height: 10%;
+    height: clamp(40px, 10%, 60px);
     position: relative;
     flex-shrink: 0;
+    margin-bottom: clamp(8px, 2%, 16px);
 }
 
 #stock-selector {
@@ -30,10 +38,10 @@
     height: 100%;
 
     position: relative;
-    left: 95%;
-    transform: translateX(-95%);
+    left: 50%;
+    transform: translateX(-50%);
 
-    font-size: 180%;
+    font-size: clamp(16px, 4vw, 32px);
     font-family: "PixelFont", sans-serif;
     text-align: center;
 
@@ -44,19 +52,19 @@
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    padding-right: 60px; 
-    text-indent: -60px;
+    padding-right: clamp(40px, 8%, 60px);
+    padding-left: clamp(10px, 2%, 20px);
 }
 
 .select-wrapper::after {
     content: "▼";
     
     position: absolute;
-    right: 20px;
+    right: clamp(10px, 3%, 20px);
     top: 50%;
     transform: translateY(-50%);
 
-    font-size: 120%;
+    font-size: clamp(14px, 3vw, 24px);
     color: rgb(68, 53, 32);
 
     pointer-events: none;
@@ -67,10 +75,42 @@
 
 #stock-content-wrapper {
     display: flex;
+    flex-direction: row;
     gap: 2%;
     width: 100%;
-    height: 85%;
-    margin-top: 2%;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Stack vertically on small screens */
+@media (max-width: 768px) {
+    #stock-content-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #stock-graph {
+        width: 100% !important;
+        height: 50% !important;
+    }
+    
+    #stock-actions {
+        width: 100% !important;
+        height: 50% !important;
+    }
+    
+    /* Larger phones - Pixel 7, iPhone 12, etc. */
+    #buy-wrapper {
+        bottom: 22%;
+    }
+    
+    #sell-wrapper {
+        bottom: 8%;
+    }
+    
+    #error-message {
+        bottom: 38%;
+    }
 }
 
 #stock-graph {
@@ -79,6 +119,8 @@
 
     background-color: white;
     border-radius: 10px;
+    padding: clamp(8px, 2%, 16px);
+    box-sizing: border-box;
 }
 
 #stock-actions {
@@ -87,10 +129,175 @@
 
     background-color: rgb(255, 255, 255);
     border-radius: 10px;
+    padding: clamp(8px, 2%, 16px);
+    box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 #stock-price {
-    font-size: 300%;
+    font-size: clamp(18px, 5vw, 48px);
     margin-left: 3%;
     margin-top: 2%;
+}
+
+#buy-wrapper {
+    position: absolute;
+    bottom: 15%;
+}
+
+#sell-wrapper {
+    position: absolute;
+    bottom: 3%;
+}
+
+#buy-wrapper, #sell-wrapper {
+    left: 0;
+    right: 0;
+    height: clamp(35px, 9%, 60px);
+    width: 100%;
+    padding: 0 clamp(8px, 2%, 16px);
+    box-sizing: border-box;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(5px, 2%, 10px);
+}
+
+#purchase-quantity, #sell-quantity {
+    width: 30%;
+    height: 100%;
+    border: clamp(2px, 0.3vw, 3px) solid black;
+    border-radius: 10px;
+    font-family: "PixelFont", sans-serif;
+    font-size: clamp(12px, 3vw, 28px);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#purchase-btn, #sell-btn {
+    height: 100%;
+    width: 40%;
+    border-radius: clamp(20px, 10vw, 70px);
+    font-family: "PixelFont", sans-serif;
+    font-size: clamp(12px, 2.5vw, 24px);
+    border: none;
+    box-sizing: border-box;
+}
+
+#purchase-btn {
+    background-color: rgb(0, 214, 0);
+    border: clamp(3px, 0.5vw, 6px) solid rgb(0, 214, 0);
+}
+
+#sell-btn {
+    background-color: red;
+    border: clamp(3px, 0.5vw, 6px) solid red;
+}
+
+#purchase-btn:hover, #sell-btn:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+}
+
+#purchase-btn:active, #sell-btn:active {
+    transform: scale(0.95);
+}
+
+#error-message {
+    text-align: center;
+    color: rgb(143, 0, 0);
+    font-size: clamp(10px, 2.5vw, 22px);
+    position: absolute;
+    bottom: 30%;
+    left: 0;
+    right: 0;
+    padding: 0 10px;
+}
+
+/* Small to medium phones */
+@media (max-width: 640px) {
+    #buy-wrapper {
+        bottom: 26%;
+        height: clamp(32px, 7%, 40px);
+    }
+    
+    #sell-wrapper {
+        bottom: 10%;
+        height: clamp(32px, 7%, 40px);
+    }
+    
+    #error-message {
+        bottom: 42%;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    #stock-market-main {
+        width: 95%;
+        height: 90%;
+    }
+    
+    #stock-price {
+        font-size: clamp(16px, 5vw, 24px);
+    }
+    
+    #buy-wrapper {
+        bottom: 27%;
+    }
+    
+    #sell-wrapper {
+        bottom: 11%;
+    }
+    
+    #purchase-quantity, #sell-quantity {
+        width: 35%;
+        font-size: clamp(11px, 3.5vw, 16px);
+    }
+    
+    #purchase-btn, #sell-btn {
+        width: 35%;
+        font-size: clamp(11px, 3.5vw, 16px);
+    }
+    
+    #error-message {
+        font-size: clamp(9px, 2.8vw, 14px);
+        bottom: 43%;
+    }
+}
+
+#stock-chart {
+    width: 100%;
+    height: calc(100% - 60px); /* Subtract space for price text */
+    display: block;
+}
+#stock-graph {
+    width: 68%;
+    height: 100%;
+
+    background-color: white;
+    border-radius: 10px;
+    padding: clamp(8px, 2%, 16px);
+    box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+#stock-price {
+    font-size: clamp(18px, 5vw, 48px);
+    margin-left: 3%;
+    margin-top: 0;
+    margin-bottom: clamp(5px, 1%, 10px);
+    flex-shrink: 0;
+}
+
+#stock-chart {
+    width: 100%;
+    flex: 1;
+    display: block;
 }

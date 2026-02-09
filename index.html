@@ -26,7 +26,7 @@
 			<div id="textbox" class="hide">
 				<img id="textbox-arrow" src="./UI Images/NextDialouge.png">
 			</div>
-			<div id="stock-market-main" class="hide">
+			<div id="stock-market-main" class="show">
 				<div class="select-wrapper">
 					<select id="stock-selector">
 						<option value="ironcliff" class="stock-choice">Ironcliff</option>
@@ -39,8 +39,20 @@
 				<div id="stock-content-wrapper">
 					<div id="stock-graph">
 						<p id="stock-price"></p>
+						<canvas id="stock-chart"></canvas>
 					</div>
 					<div id="stock-actions">
+						<div id="buy-wrapper">
+							<input type="number" id="purchase-quantity" value="0">
+							<button id="purchase-btn">Buy</button>
+						</div>
+						<div id="sell-wrapper">
+							<input type="number" id="sell-quantity" value="0">
+							<button id="sell-btn">Sell</button>
+						</div>
+						<div id="error-message">
+							<p id="error-msg-txt"></p>
+						</div>
 					</div>
 				</div>
 			</div>

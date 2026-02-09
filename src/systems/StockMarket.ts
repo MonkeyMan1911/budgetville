@@ -10,6 +10,15 @@ interface StockObj {
   basePrice: number
 }
 
+export interface StockPurchaseDetails {
+    quantity: number,
+    price: number
+}
+export interface PortfolioStockDetails {
+    quantity: number,
+    purchases: StockPurchaseDetails[]
+}
+
 type MarketState = "bull" | "bear" | "neutral"
 
 interface NewsEvent {
@@ -109,7 +118,7 @@ class StockMarket {
         })
 
         gameStockMarketUi.updatePrice()
-        console.log(`Market: ${this.marketState}`, this.stockData)
+        ///console.log(`Market: ${this.marketState}`, this.stockData)
     }
 
 

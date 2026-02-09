@@ -148,7 +148,7 @@
   </tile>
   <tile id="25887">
    <objectgroup draworder="index" id="2">
-    <object id="1" x="0" y="3.44404" width="16" height="12.556"/>
+    <object id="1" x="0" y="12.1078" width="16" height="3.85487"/>
    </objectgroup>
   </tile>
   <tile id="25888">
