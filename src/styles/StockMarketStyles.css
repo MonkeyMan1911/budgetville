@@ -27,7 +27,7 @@
 
 .select-wrapper {
     width: 100%;
-    height: clamp(40px, 10%, 60px);
+    height: clamp(45px, 10%, 70px);
     position: relative;
     flex-shrink: 0;
     margin-bottom: clamp(8px, 2%, 16px);
@@ -41,7 +41,7 @@
     left: 50%;
     transform: translateX(-50%);
 
-    font-size: clamp(16px, 4vw, 32px);
+    font-size: clamp(20px, 4.5vw, 38px);
     font-family: "PixelFont", sans-serif;
     text-align: center;
 
@@ -64,7 +64,7 @@
     top: 50%;
     transform: translateY(-50%);
 
-    font-size: clamp(14px, 3vw, 24px);
+    font-size: clamp(18px, 3.5vw, 28px);
     color: rgb(68, 53, 32);
 
     pointer-events: none;
@@ -109,7 +109,7 @@
     }
     
     #error-message {
-        bottom: 38%;
+        bottom: 33%;
     }
 }
 
@@ -121,6 +121,9 @@
     border-radius: 10px;
     padding: clamp(8px, 2%, 16px);
     box-sizing: border-box;
+    
+    display: flex;
+    flex-direction: column;
 }
 
 #stock-actions {
@@ -138,9 +141,163 @@
 }
 
 #stock-price {
-    font-size: clamp(18px, 5vw, 48px);
+    font-size: clamp(24px, 6vw, 54px);
     margin-left: 3%;
-    margin-top: 2%;
+    margin-top: 0;
+    margin-bottom: clamp(5px, 1%, 10px);
+    flex-shrink: 0;
+}
+
+#stock-chart {
+    width: 100%;
+    flex: 1;
+    display: block;
+}
+
+#portfolio-info {
+    position: absolute;
+    top: 5%;
+    left: 0;
+    right: 0;
+    padding: 0 clamp(10px, 3%, 18px);
+    font-size: clamp(14px, 3vw, 22px);
+}
+
+#portfolio-info p {
+    margin: clamp(4px, 1.2%, 8px) 0;
+}
+
+#shares-owned {
+    color: #333;
+}
+
+#avg-cost {
+    color: #666;
+}
+
+#profit-loss-val.positive {
+    color: green;
+    font-weight: bold;
+}
+
+#profit-loss-val.negative {
+    color: red;
+    font-weight: bold;
+}
+
+#market-state-indicator {
+    position: absolute;
+    top: 25%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: clamp(15px, 3.2vw, 24px);
+    padding: clamp(5px, 1.2%, 10px);
+}
+
+#market-state-text.bull {
+    color: green;
+    font-weight: bold;
+}
+
+#market-state-text.bear {
+    color: red;
+    font-weight: bold;
+}
+
+#market-state-text.neutral {
+    color: #666;
+}
+
+#news-notification {
+    position: absolute;
+    top: 33%;
+    left: 0;
+    right: 0;
+    padding: clamp(8px, 2.5%, 12px);
+    background-color: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    margin: 0 clamp(8px, 2%, 12px);
+    text-align: center;
+    font-size: clamp(12px, 2.6vw, 18px);
+    animation: slideIn 0.3s ease-out;
+}
+
+#news-notification.positive {
+    background-color: #d4edda;
+    border-color: #28a745;
+}
+
+#news-notification.negative {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+}
+
+#news-text {
+    margin: 0;
+}
+
+#transaction-message {
+    position: absolute;
+    top: 45%;
+    left: 0;
+    right: 0;
+    padding: clamp(8px, 2.5%, 12px);
+    background-color: #d1ecf1;
+    border: 2px solid #0c5460;
+    border-radius: 8px;
+    margin: 0 clamp(8px, 2%, 12px);
+    text-align: center;
+    font-size: clamp(12px, 2.6vw, 18px);
+    animation: slideIn 0.3s ease-out;
+}
+
+#transaction-text {
+    margin: 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#quick-actions {
+    position: absolute;
+    bottom: 55%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: clamp(6px, 2%, 12px);
+    padding: 0 clamp(8px, 2%, 16px);
+}
+
+.quick-btn {
+    height: clamp(35px, 7%, 50px);
+    width: 45%;
+    border-radius: clamp(18px, 6vw, 35px);
+    font-family: "PixelFont", sans-serif;
+    font-size: clamp(13px, 2.5vw, 20px);
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    border: clamp(2px, 0.4vw, 5px) solid #4a90e2;
+}
+
+.quick-btn:hover {
+    filter: brightness(0.9);
+}
+
+.quick-btn:active {
+    transform: scale(0.95);
 }
 
 #buy-wrapper {
@@ -156,7 +313,7 @@
 #buy-wrapper, #sell-wrapper {
     left: 0;
     right: 0;
-    height: clamp(35px, 9%, 60px);
+    height: clamp(40px, 10%, 65px);
     width: 100%;
     padding: 0 clamp(8px, 2%, 16px);
     box-sizing: border-box;
@@ -164,16 +321,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: clamp(5px, 2%, 10px);
+    gap: clamp(6px, 2%, 12px);
 }
 
 #purchase-quantity, #sell-quantity {
     width: 30%;
     height: 100%;
-    border: clamp(2px, 0.3vw, 3px) solid black;
+    border: clamp(2px, 0.4vw, 4px) solid black;
     border-radius: 10px;
     font-family: "PixelFont", sans-serif;
-    font-size: clamp(12px, 3vw, 28px);
+    font-size: clamp(15px, 3.5vw, 32px);
     text-align: center;
     box-sizing: border-box;
 }
@@ -181,21 +338,21 @@
 #purchase-btn, #sell-btn {
     height: 100%;
     width: 40%;
-    border-radius: clamp(20px, 10vw, 70px);
+    border-radius: clamp(25px, 12vw, 75px);
     font-family: "PixelFont", sans-serif;
-    font-size: clamp(12px, 2.5vw, 24px);
+    font-size: clamp(15px, 3vw, 28px);
     border: none;
     box-sizing: border-box;
 }
 
 #purchase-btn {
     background-color: rgb(0, 214, 0);
-    border: clamp(3px, 0.5vw, 6px) solid rgb(0, 214, 0);
+    border: clamp(4px, 0.6vw, 7px) solid rgb(0, 214, 0);
 }
 
 #sell-btn {
     background-color: red;
-    border: clamp(3px, 0.5vw, 6px) solid red;
+    border: clamp(4px, 0.6vw, 7px) solid red;
 }
 
 #purchase-btn:hover, #sell-btn:hover {
@@ -210,28 +367,82 @@
 #error-message {
     text-align: center;
     color: rgb(143, 0, 0);
-    font-size: clamp(10px, 2.5vw, 22px);
+    font-size: clamp(12px, 2.8vw, 24px);
     position: absolute;
-    bottom: 30%;
+    bottom: 28%;
     left: 0;
     right: 0;
     padding: 0 10px;
 }
 
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    #portfolio-info {
+        top: 3%;
+        font-size: clamp(13px, 3.2vw, 18px);
+    }
+    
+    #market-state-indicator {
+        top: 20%;
+    }
+    
+    #news-notification {
+        top: 28%;
+    }
+    
+    #transaction-message {
+        top: 38%;
+    }
+    
+    #quick-actions {
+        bottom: 50%;
+    }
+    
+    #buy-wrapper {
+        bottom: 22%;
+    }
+    
+    #sell-wrapper {
+        bottom: 8%;
+    }
+    
+    #error-message {
+        bottom: 33%;
+    }
+}
+
 /* Small to medium phones */
 @media (max-width: 640px) {
+    #quick-actions {
+        bottom: 48%;
+        height: clamp(36px, 8%, 45px);
+    }
+    
+    .quick-btn {
+        height: 100%;
+        font-size: clamp(12px, 3vw, 18px);
+    }
+    
     #buy-wrapper {
         bottom: 26%;
-        height: clamp(32px, 7%, 40px);
+        height: clamp(38px, 8%, 45px);
     }
     
     #sell-wrapper {
         bottom: 10%;
-        height: clamp(32px, 7%, 40px);
+        height: clamp(38px, 8%, 45px);
+    }
+    
+    #purchase-quantity, #sell-quantity {
+        font-size: clamp(14px, 4vw, 20px);
+    }
+    
+    #purchase-btn, #sell-btn {
+        font-size: clamp(14px, 3.5vw, 20px);
     }
     
     #error-message {
-        bottom: 42%;
+        bottom: 36%;
     }
 }
 
@@ -243,7 +454,15 @@
     }
     
     #stock-price {
-        font-size: clamp(16px, 5vw, 24px);
+        font-size: clamp(20px, 6vw, 28px);
+    }
+    
+    #portfolio-info {
+        font-size: clamp(12px, 3.5vw, 16px);
+    }
+    
+    #quick-actions {
+        bottom: 46%;
     }
     
     #buy-wrapper {
@@ -256,48 +475,16 @@
     
     #purchase-quantity, #sell-quantity {
         width: 35%;
-        font-size: clamp(11px, 3.5vw, 16px);
+        font-size: clamp(13px, 4.2vw, 18px);
     }
     
     #purchase-btn, #sell-btn {
         width: 35%;
-        font-size: clamp(11px, 3.5vw, 16px);
+        font-size: clamp(13px, 4vw, 18px);
     }
     
     #error-message {
-        font-size: clamp(9px, 2.8vw, 14px);
-        bottom: 43%;
+        font-size: clamp(11px, 3.2vw, 16px);
+        bottom: 37%;
     }
-}
-
-#stock-chart {
-    width: 100%;
-    height: calc(100% - 60px); /* Subtract space for price text */
-    display: block;
-}
-#stock-graph {
-    width: 68%;
-    height: 100%;
-
-    background-color: white;
-    border-radius: 10px;
-    padding: clamp(8px, 2%, 16px);
-    box-sizing: border-box;
-    
-    display: flex;
-    flex-direction: column;
-}
-
-#stock-price {
-    font-size: clamp(18px, 5vw, 48px);
-    margin-left: 3%;
-    margin-top: 0;
-    margin-bottom: clamp(5px, 1%, 10px);
-    flex-shrink: 0;
-}
-
-#stock-chart {
-    width: 100%;
-    flex: 1;
-    display: block;
-}
+}   

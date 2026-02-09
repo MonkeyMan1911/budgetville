@@ -42,6 +42,29 @@
 						<canvas id="stock-chart"></canvas>
 					</div>
 					<div id="stock-actions">
+						<div id="portfolio-info">
+							<p id="shares-owned">Shares: <span id="shares-qty">0</span></p>
+							<p id="avg-cost">Avg Cost: <span id="avg-cost-val">$0.00</span></p>
+							<p id="profit-loss">P/L: <span id="profit-loss-val">$0.00</span></p>
+						</div>
+						
+						<div id="market-state-indicator">
+							<span id="market-state-text">Market: Neutral</span>
+						</div>
+						
+						<div id="news-notification" class="hide">
+							<p id="news-text"></p>
+						</div>
+						
+						<div id="transaction-message" class="hide">
+							<p id="transaction-text"></p>
+						</div>
+						
+						<div id="quick-actions">
+							<button id="buy-max-btn" class="quick-btn">Buy Max</button>
+							<button id="sell-all-btn" class="quick-btn">Sell All</button>
+						</div>
+						
 						<div id="buy-wrapper">
 							<input type="number" id="purchase-quantity" value="0">
 							<button id="purchase-btn">Buy</button>

@@ -143,43 +143,49 @@ class StockMarket {
         }
     }
 
+    // In the maybeChangeMarket method, add:
     private maybeChangeMarket() {
         if (this.marketTicksRemaining > 0) {
-            this.marketTicksRemaining--
-            return
+            this.marketTicksRemaining--;
+            return;
         }
 
-        const roll = Math.random()
+        const roll = Math.random();
 
         if (roll < 0.03) {
-            this.marketState = "bull"
-            this.marketTicksRemaining = 25
-            console.log("🐂 BULL MARKET STARTED")
+            this.marketState = "bull";
+            this.marketTicksRemaining = 25;
+            console.log("🐂 BULL MARKET STARTED");
+            gameStockMarketUi.updateMarketState("bull");
         } else if (roll < 0.06) {
-            this.marketState = "bear"
-            this.marketTicksRemaining = 25
-            console.log("🐻 BEAR MARKET STARTED")
+            this.marketState = "bear";
+            this.marketTicksRemaining = 25;
+            console.log("🐻 BEAR MARKET STARTED");
+            gameStockMarketUi.updateMarketState("bear");
         } else {
-            this.marketState = "neutral"
-            this.marketTicksRemaining = 20
+            this.marketState = "neutral";
+            this.marketTicksRemaining = 20;
+            gameStockMarketUi.updateMarketState("neutral");
         }
     }
 
+    // In the maybeTriggerNews method, add:
     private maybeTriggerNews(stock: StockNames) {
-        if (this.newsEvents[stock]) return
-        if (this.recoveryPhase[stock]) return
-        if (Math.random() > 0.02) return
+        if (this.newsEvents[stock]) return;
+        if (this.recoveryPhase[stock]) return;
+        if (Math.random() > 0.02) return;
 
-        const positive = Math.random() > 0.5
+        const positive = Math.random() > 0.5;
 
         this.newsEvents[stock] = {
-            impact: positive ? 0.015 : -0.018, // More balanced impact
-            volatilityBoost: 0.015, // Lower volatility boost
-            ticksRemaining: 4, // Longer news duration
-            recoveryTicks: 10 // Longer recovery
-        }
+            impact: positive ? 0.015 : -0.018,
+            volatilityBoost: 0.015,
+            ticksRemaining: 4,
+            recoveryTicks: 10
+        };
 
-        console.log(positive ? `📈 Positive news for ${stock}` : `📉 Negative news for ${stock}`)
+        console.log(positive ? `📈 Positive news for ${stock}` : `📉 Negative news for ${stock}`);
+        gameStockMarketUi.showNewsNotification(stock, positive);
     }
 
 
