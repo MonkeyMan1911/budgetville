@@ -13,7 +13,8 @@
 		<title>Budgetville</title>
 	</head>
 	<body>
-		<main>
+		<p class="hide" id="screen-error">This game is not supported on phones. Please use a bigger device</p>
+		<main id="main">
 			<div id="choices-div" class="hide">
 				<button id="choice-1" class="choice-btn hide"></button>
 				<button id="choice-2" class="choice-btn hide"></button>
@@ -26,7 +27,7 @@
 			<div id="textbox" class="hide">
 				<img id="textbox-arrow" src="./UI Images/NextDialouge.png">
 			</div>
-			<div id="stock-market-main" class="show">
+			<div id="stock-market-main" class="hide">
 				<div class="select-wrapper">
 					<select id="stock-selector">
 						<option value="ironcliff" class="stock-choice">Ironcliff</option>

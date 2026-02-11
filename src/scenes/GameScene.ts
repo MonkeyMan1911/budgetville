@@ -7,6 +7,7 @@ import { TiledResource } from "@excaliburjs/plugin-tiled";
 import { NPC } from "../objects/NPC";
 import { balanceDiv } from "../UI/BalanceUI";
 import { ChunkedTiledMap } from "./ChunkedTiledMap";
+import { joystick } from "../objects/Joystick";
 
 export interface GameSceneResources {
     TiledMap: TiledResource
@@ -31,6 +32,7 @@ export class GameScene extends Scene {
     }
 
     async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
+        this.add(joystick)
         this.player = context.data!.player
 
         // Add door objects to the scene
@@ -77,7 +79,7 @@ export class GameScene extends Scene {
         }
 
         balanceDiv.show()
-        balanceDiv.updateBalance(this.player.balance)
+        balanceDiv.updateBalance(this.player.getBalance())
     }
 
     override onPreUpdate(engine: ex.Engine, delta: number): void {

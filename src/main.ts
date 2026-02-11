@@ -24,6 +24,12 @@ const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg);
 const player = initializePlayer(enterKey, eKey);
 
 (async () => {
+	if (/iPhone|Android.+Mobile|Windows Phone/i.test(navigator.userAgent) && window.matchMedia("(pointer: coarse)").matches) {
+		document.getElementById("main")!.remove()
+		document.getElementById("screen-error")!.classList.remove("hide")
+		return
+	}
+
     await game.start(loader);
 	stockMarket.start()
 	gameStockMarketUi.initialize()

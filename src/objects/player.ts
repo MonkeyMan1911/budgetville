@@ -10,6 +10,7 @@ import { Cutscene } from "../Cutscene";
 import { WalkingEvent } from "./NPC";
 import { calculateDistance } from "../utils/calculateDistance";
 import { PortfolioStockDetails, StockNames, StockPurchaseDetails } from "../systems/StockMarket";
+import { joystick } from "./Joystick";
 
 export enum Directions {
 	Up = "up",
@@ -190,7 +191,37 @@ export class Player extends Actor {
 
 		const ignoredKeys: Keys[] = [Keys.ShiftLeft, Keys.ShiftRight]
 
-		if (keyboard.getKeys().length > 2 && ignoredKeys.every(key => !keyboard.getKeys().includes(key))) {
+		// Check for joystick input first
+		const joyDir = joystick.getDirection();
+		const joyMag = joystick.getMagnitude();
+		
+		if (joyMag > 0.1) { // Dead zone - ignore tiny movements
+			// Determine which direction is dominant (4-directional only)
+			const absX = Math.abs(joyDir.x);
+			const absY = Math.abs(joyDir.y);
+			
+			if (absX > absY) {
+				// Horizontal movement
+				if (joyDir.x > 0) {
+					this.direction = Directions.Right;
+					moveDir = Vector.Right;
+				} else {
+					this.direction = Directions.Left;
+					moveDir = Vector.Left;
+				}
+			} else {
+				// Vertical movement
+				if (joyDir.y > 0) {
+					this.direction = Directions.Down;
+					moveDir = Vector.Down;
+				} else {
+					this.direction = Directions.Up;
+					moveDir = Vector.Up;
+				}
+			}
+		}
+		// Fall back to keyboard if joystick not active
+		else if (keyboard.getKeys().length > 2 && ignoredKeys.every(key => !keyboard.getKeys().includes(key))) {
 			moveDir = Vector.Zero;
 			this.movementState = MovementStates.Idle;
 			this.animationManager.goToIdle(this.direction);
@@ -213,7 +244,9 @@ export class Player extends Actor {
 			moveDir = moveDir.add(Vector.Left)
 		}
 
-		if (keyboard.isHeld(Keys.ShiftLeft) || keyboard.isHeld(Keys.ShiftRight)) { speed *= 1.3 }
+		if (keyboard.isHeld(Keys.ShiftLeft) || keyboard.isHeld(Keys.ShiftRight)) { 
+			speed *= 1.3 
+		}
 
 		if (!moveDir.equals(Vector.Zero)) {
 			moveDir = moveDir.normalize().scale(speed);
