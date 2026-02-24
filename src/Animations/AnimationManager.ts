@@ -1,5 +1,5 @@
 import * as ex from "excalibur";
-import rawData from './animations.json' assert { type: "json" };
+import rawData from './animations.json' with { type: "json" };
 
 interface AnimationManagerConfig {
     spritesheet: ex.SpriteSheet;

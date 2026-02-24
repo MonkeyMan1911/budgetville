@@ -16,19 +16,6 @@ export const loader = new Loader();
 
 loader.backgroundColor = "black"
 
-// loader.startButtonFactory = () => {
-// 	let startButton = document.createElement("button")
-// 	startButton.textContent = "Start Game"	
-// 	startButton.style.fontFamily = "PixelFo	nt"
-// 	startButton.style.fontSize = "300%"
-// 	startButton.style.height = "15vh"
-// 	startButton.style.width = "25vw"
-// 	startButton.style.borderRadius = "20px"
-// 	startButton.style.backgroundColor = "#37de61"
-// 	startButton.style.cursor = "pointer"
-// 	return startButton
-// }
-
 loader.suppressPlayButton = true
 
 for (const res of Object.values(Resources)) {
