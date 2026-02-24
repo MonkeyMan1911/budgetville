@@ -8,6 +8,7 @@ import { NPC } from "../objects/NPC";
 import { balanceDiv } from "../UI/BalanceUI";
 import { ChunkedTiledMap } from "./ChunkedTiledMap";
 import { joystick } from "../objects/Joystick";
+import { isMobile } from "../main";
 
 export interface GameSceneResources {
     TiledMap: TiledResource
@@ -32,7 +33,9 @@ export class GameScene extends Scene {
     }
 
     async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
-        this.add(joystick)
+        if (isMobile) {
+            this.add(joystick)
+        }
         this.player = context.data!.player
 
         // Add door objects to the scene

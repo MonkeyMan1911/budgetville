@@ -23,6 +23,11 @@ const enterKey = new UIKey("enter", vec(0, 0), Resources.EnterKeyImg);
 const eKey = new UIKey("e", vec(1, 0), Resources.EKeyImg);
 const player = initializePlayer(enterKey, eKey);
 
+export const isMobile = (
+    /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+) && window.matchMedia("(pointer: coarse)").matches;
+
 (async () => {
 	if (/iPhone|Android.+Mobile|Windows Phone/i.test(navigator.userAgent) && window.matchMedia("(pointer: coarse)").matches) {
 		document.getElementById("main")!.remove()

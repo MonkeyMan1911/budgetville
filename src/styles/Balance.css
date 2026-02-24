@@ -4,6 +4,7 @@
     right: 10%;      /* Add this - distance from right */
     display: inline-block;
     line-height: 0;
+    color: black
 }
 
 #balance-hud.hide {
