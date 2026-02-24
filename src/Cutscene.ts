@@ -73,8 +73,8 @@ export class Cutscene {
     private handleTransaction(eventObj: TransactionEvent) {
         gameTextBox.clear()
         gameTextBox.hide()
-        this.playerRef!.balance += eventObj.amount
-        balanceDiv.updateBalance(this.playerRef!.balance)
+        this.playerRef!.updateBalance(eventObj.amount)
+        balanceDiv.updateBalance(this.playerRef!.getBalance())
     }
 
     private handleTextMessage(eventObj: TalkingEvent) {
