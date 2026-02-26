@@ -46,10 +46,9 @@ export class Player extends Actor {
 	private collidingWithDoor: boolean = false;
 	private currentDoor: DoorObject | null = null;
 
-	public enterKey: UIKey;
-	private enterKeyShown: boolean = false;
-	public eKey: UIKey;
-	private eKeyShown: boolean = false;
+	public keysArray: UIKey[] = []
+	private key0Shown: boolean = false;
+	private key1Shown: boolean = false;
 
 	private collidingWithNpc: boolean = false;
 	private currentNpc: NPC | null = null;
@@ -166,7 +165,7 @@ export class Player extends Actor {
 
 	private happinessLevel = 100
 
-	constructor(enterKey: UIKey, eKey: UIKey) {
+	constructor(keysArray: UIKey[]) {
 		super({
 			name: 'Player',
 			pos: vec(calculateDistance(33), calculateDistance(15)),
@@ -175,8 +174,7 @@ export class Player extends Actor {
 			collisionType: CollisionType.Active,
 		});
 
-		this.enterKey = enterKey
-		this.eKey = eKey
+		this.keysArray = keysArray
 	}
 
 	override onInitialize() {
@@ -281,7 +279,7 @@ export class Player extends Actor {
 			const newX = (this.currentDoor?.properties?.[1]?.value as number ?? 0) * 16 + 8;
 			const newY = (this.currentDoor?.properties?.[2]?.value as number ?? 0) * 16;
 
-			this.enterKey.hide()
+			this.keysArray[1].hide()
 
 			this.movementState = MovementStates.Idle;
 			this.direction = newDirection;
@@ -301,7 +299,7 @@ export class Player extends Actor {
 				this.currentCutscene.start(this, engine.currentScene as any, this.currentNpc!);
 			}
 			
-			this.eKey.hide()
+			this.keysArray[0].hide()
 		}
 
 		if (keyboard.wasPressed(Keys.Enter) && other === "textbox") {
@@ -341,8 +339,8 @@ export class Player extends Actor {
 		this.canMove = true;
 		this.collidingWithNpc = false;
 		this.currentNpc = null;
-		this.eKey.hide();
-		this.eKeyShown = false;
+		this.keysArray[0].hide();
+		this.key0Shown = false;
 	}
 
 	// Method for cutscene to tell player to walk
@@ -436,10 +434,10 @@ export class Player extends Actor {
 		if (other.owner instanceof DoorObject) {
 			this.collidingWithDoor = true
 			this.currentDoor = other.owner
-			if (!this.enterKeyShown) {
-				this.enterKey.setPos(ex.vec(other.owner.pos.x + (other.owner.width / 2), other.owner.pos.y - 20))
-				this.enterKey.show()
-				this.enterKeyShown = true
+			if (!this.key1Shown) {
+				this.keysArray[1].setPos(ex.vec(other.owner.pos.x + (other.owner.width / 2), other.owner.pos.y - 20))
+				this.keysArray[1].show()
+				this.key1Shown = true
 			}
 		}	
 
@@ -447,10 +445,10 @@ export class Player extends Actor {
 			this.collidingWithNpc = true
 			const otherNpc = other.owner instanceof NPC ? other.owner : other.owner.parent as NPC
 			this.currentNpc = otherNpc
-			if (!this.eKeyShown && !this.currentCutscene) {
-				this.eKey.setPos(ex.vec(otherNpc.pos.x, otherNpc.pos.y - 15))
-				this.eKey.show()
-				this.eKeyShown = true
+			if (!this.key0Shown && !this.currentCutscene) {
+				this.keysArray[0].setPos(ex.vec(otherNpc.pos.x, otherNpc.pos.y - 15))
+				this.keysArray[0].show()
+				this.key0Shown = true
 			}
 		}
 	}
@@ -459,16 +457,16 @@ export class Player extends Actor {
 		if (other.owner instanceof DoorObject) {
 			this.collidingWithDoor = false
 			this.currentDoor = null
-			this.enterKey.hide()
-			this.enterKeyShown = false
+			this.keysArray[1].hide()
+			this.key1Shown = false
 		}	
 
 		if (other.owner instanceof NPC || other.owner?.parent instanceof NPC) {
 			if (!this.currentCutscene) {
 				this.collidingWithNpc = false
 				this.currentNpc = null
-				this.eKey.hide()
-				this.eKeyShown = false
+				this.keysArray[0].hide()
+				this.key0Shown = false
 			}
 		}
 	}
@@ -476,8 +474,8 @@ export class Player extends Actor {
 
 export let player: Player = null as any;
 
-export function initializePlayer(enterKey: UIKey, eKey: UIKey): Player {
-	player = new Player(enterKey, eKey);
+export function initializePlayer(keysArray: UIKey[]): Player {
+	player = new Player(keysArray);
 	player.z = 42;
 	return player;
 }

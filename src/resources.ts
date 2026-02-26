@@ -4,7 +4,8 @@ import { ImageSource, Loader, Resource } from "excalibur";
 export const Resources = {
 	MainCharacterSpriteSheetImg: new ImageSource("./Sprites/MainCharacter.png"),
 	EnterKeyImg: new ImageSource("./Tilesets/Keys/EnterKey.png"),
-	EKeyImg: new ImageSource("./Tilesets/Keys/KeyE.png")
+	EKeyImg: new ImageSource("./Tilesets/Keys/KeyE.png"),
+	OKeyImg: new ImageSource("./Tilesets/Keys/KeyO.png")
 } as const; 
 
 export const SpriteSheetRes = {

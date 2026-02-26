@@ -9,6 +9,7 @@ import { balanceDiv } from "../UI/BalanceUI";
 import { ChunkedTiledMap } from "./ChunkedTiledMap";
 import { joystick } from "../objects/Joystick";
 import { isMobile } from "../main";
+import { actionButton } from "../objects/ActionButton";
 
 export interface GameSceneResources {
     TiledMap: TiledResource
@@ -35,6 +36,7 @@ export class GameScene extends Scene {
     async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
         if (isMobile) {
             this.add(joystick)
+            this.add(actionButton)
         }
         this.player = context.data!.player
 
@@ -53,8 +55,8 @@ export class GameScene extends Scene {
         this.camera.strategy.lockToActor(this.player)
         this.camera.zoom = 2.1
 
-        this.add(this.player.enterKey)
-        this.add(this.player.eKey)
+        this.add(this.player.keysArray[0])
+        this.add(this.player.keysArray[1])
 
         if (this.useChunking) {
             // Use chunked loading for large maps

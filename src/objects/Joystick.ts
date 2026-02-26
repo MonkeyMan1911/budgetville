@@ -14,7 +14,7 @@ class Joystick extends ex.Actor {
             collisionType: ex.CollisionType.PreventCollision
         })
         
-        // Outer circle (stationary, red)
+        // Outer circle (stationary, gray)
         this.graphics.use(new ex.Circle({radius: 30, color: ex.Color.fromHex("#93939369")}))
         
         this.pointer.useGraphicsBounds = true;
