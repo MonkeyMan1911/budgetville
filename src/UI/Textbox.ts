@@ -13,8 +13,22 @@ export class Textbox {
     private typingSpeed: number = 30; // milliseconds per character
     private textContent: string = "";
 
+    private clicked: boolean = false
+
     constructor() {
         this.element = document.getElementById("textbox")!; 
+
+        this.element.addEventListener("click", () => {
+            this.clicked = true
+        })
+    }
+
+    get wasPressed(): boolean {
+        if (this.clicked) {
+            this.clicked = false
+            return true
+        }
+        return false
     }
 
     get isVisible(): boolean {

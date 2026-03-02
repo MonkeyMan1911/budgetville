@@ -5,6 +5,9 @@ import { GameScene } from "./scenes/GameScene";
 import { NPC } from "./objects/NPC";
 import { balanceDiv } from "./UI/BalanceUI";
 import { DialogueMenu } from "./UI/DialogueMenu";
+import { actionButton } from "./objects/ActionButton";
+import { joystick } from "./objects/Joystick";
+import { isMobile } from "./main";
 
 export class Cutscene {
     private cutsceneData: NPCTalking;
@@ -22,6 +25,10 @@ export class Cutscene {
     }
 
     start(player: Player, gameScene: GameScene, initiatingNPC?: NPC) {
+        if (isMobile) {
+            actionButton.hide()
+            joystick.hide()
+        }
         this.playerRef = player;
         this.gameSceneRef = gameScene;
         this.initiatingNPC = initiatingNPC || null;
@@ -66,6 +73,10 @@ export class Cutscene {
             }
             else {
                 this.playerRef.endCutscene()
+                if (isMobile) {
+                    actionButton.show()
+                    joystick.show()
+                }
             }
         }
     }

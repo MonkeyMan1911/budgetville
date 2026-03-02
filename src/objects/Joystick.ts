@@ -95,6 +95,14 @@ class Joystick extends ex.Actor {
         const distance = this.innerStick.pos.sub(this.pos).size;
         return Math.min(distance / this.maxRadius, 1);
     }
+
+    hide() {
+        this.graphics.isVisible = false
+    }
+
+    show() {
+        this.graphics.isVisible = true
+    }
 }
 
 export const joystick = new Joystick()

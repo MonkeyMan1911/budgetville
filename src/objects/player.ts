@@ -11,6 +11,7 @@ import { WalkingEvent } from "./NPC";
 import { calculateDistance } from "../utils/calculateDistance";
 import { PortfolioStockDetails, StockNames, StockPurchaseDetails } from "../systems/StockMarket";
 import { joystick } from "./Joystick";
+import { actionButton } from "./ActionButton";
 
 export enum Directions {
 	Up = "up",
@@ -273,7 +274,7 @@ export class Player extends Actor {
 	private async enterLogic(engine: Engine, other?: "door" | "npc" | "textbox") {
 		const keyboard = engine.input.keyboard
 
-		if (keyboard.wasPressed(Keys.Enter) && other === "door") {
+		if ((keyboard.wasPressed(Keys.Enter) || actionButton.isPressed()) && other === "door") {
 			const targetScene = this.currentDoor?.leadsTo;
 			const newDirection = this.currentDoor?.properties![0].value as Directions;
 			const newX = (this.currentDoor?.properties?.[1]?.value as number ?? 0) * 16 + 8;
@@ -289,7 +290,7 @@ export class Player extends Actor {
 			engine.goToScene(targetScene, {sceneActivationData: {player: this}});  
 		}
 
-		if (keyboard.wasPressed(Keys.E) && other === "npc" && !this.currentCutscene) {
+		if ((keyboard.wasPressed(Keys.E) || actionButton.isPressed()) && other === "npc" && !this.currentCutscene) {
 			this.canMove = false
 			const talkingData = this.currentNpc?.getTalkingData();
 			
@@ -302,7 +303,7 @@ export class Player extends Actor {
 			this.keysArray[0].hide()
 		}
 
-		if (keyboard.wasPressed(Keys.Enter) && other === "textbox") {
+		if ((keyboard.wasPressed(Keys.Enter) || gameTextBox.wasPressed) && other === "textbox") {
 			// Don't allow Enter to progress if waiting for a choice
 			if (this.currentCutscene && this.currentCutscene.isWaitingForChoice()) {
 				return	
