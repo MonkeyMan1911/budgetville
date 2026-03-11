@@ -22,16 +22,14 @@ export default class Mission {
     }
 
 
-    public checkFinished(currentValue?: MissionDetails["value"]): boolean {
-        if (this.details.type === "travel" && currentValue === this.details.value) {
-            return true
-        }   
-        if (this.details.type === "collectFlag") {
-            if (window.localStorage.getItem(this.details.value) !== null) {
-                return true
-            }
+    public checkFinished(currentPos?: ex.Vector): boolean {
+        if (this.details.type === "travel" && currentPos) {
+            // TriggerZone handles this now, but keep as fallback with distance check
+            return currentPos.distance(this.details.value as ex.Vector) < 16
         }
-
+        if (this.details.type === "collectFlag") {
+            return window.localStorage.getItem(this.details.value as string) !== null
+        }
         return false
     }
 }

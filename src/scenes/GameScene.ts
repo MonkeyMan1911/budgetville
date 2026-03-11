@@ -12,6 +12,7 @@ import { isMobile } from "../main";
 import { actionButton } from "../objects/ActionButton";
 import { pauseBtn } from "../UI/PauseButton";
 import { pauseMenu } from "../UI/PauseMenu";
+import { TriggerZone } from "../objects/TriggerZone";
 
 export interface GameSceneResources {
     TiledMap: TiledResource
@@ -22,6 +23,7 @@ export class GameScene extends Scene {
     resources: GameSceneResources;
     player: Player | undefined;
     npcs: NPC[] = [];
+    triggerZones: TriggerZone[] = [];
     private chunkedMap: ChunkedTiledMap | null = null;
     private useChunking: boolean = false; // Set to true to enable chunking
 
@@ -51,6 +53,9 @@ export class GameScene extends Scene {
 
         for (let npc of this.npcs) {
             this.add(npc)
+        }
+        for (let zone of this.triggerZones) {
+            this.add(zone)
         }
 
         this.add(this.player);

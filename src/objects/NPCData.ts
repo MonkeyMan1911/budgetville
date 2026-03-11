@@ -5,6 +5,7 @@ import { Directions } from "./player";
 import { GameScene } from "../scenes/GameScene";
 import { calculateDistance } from "../utils/calculateDistance";
 import Mission from "../systems/Mission";
+import { TriggerZone } from "./TriggerZone";
 
 export function createNPCData(gameScene: GameScene) {
     return {
@@ -100,7 +101,21 @@ export function createNPCData(gameScene: GameScene) {
                         }
                     ]
                 })
-            ]  
+            ],
+            TriggerZones: [
+                new TriggerZone({
+                    pos: ex.vec(calculateDistance(25), calculateDistance(18)),
+                    width: 32,
+                    height: 32,
+                    missionName: "Test Mission",   // matches Mission name exactly
+                    cutscene: {
+                        requiredFlags: [],
+                        events: [
+                            { type: "textMessage", text: "You arrived! Mission complete.", direction: Directions.Down }
+                        ]
+                    }
+                })
+            ]
         },
         Bank: {
             NPCs: [ 
@@ -112,7 +127,8 @@ export function createNPCData(gameScene: GameScene) {
                     talking: [],
                     z: 51
                 })
-            ]
+            ],
+            TriggerZones: []
         }
     }
 }

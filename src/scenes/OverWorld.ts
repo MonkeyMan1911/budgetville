@@ -15,7 +15,9 @@ export class OverWorld extends GameScene {
 
     async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
         if (this.npcs.length === 0) {
-            this.npcs = createNPCData(this).World.NPCs;
+            const data = createNPCData(this)
+            this.npcs = data.World.NPCs
+            this.triggerZones = data.World.TriggerZones
         }
         
         await super.onActivate(context);
