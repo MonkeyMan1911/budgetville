@@ -10,6 +10,8 @@ import { ChunkedTiledMap } from "./ChunkedTiledMap";
 import { joystick } from "../objects/Joystick";
 import { isMobile } from "../main";
 import { actionButton } from "../objects/ActionButton";
+import { pauseBtn } from "../UI/PauseButton";
+import { pauseMenu } from "../UI/PauseMenu";
 
 export interface GameSceneResources {
     TiledMap: TiledResource
@@ -83,6 +85,9 @@ export class GameScene extends Scene {
             });
         }
 
+        pauseBtn.show()
+        pauseMenu.hide()
+        pauseMenu.init()
         balanceDiv.show()
         balanceDiv.updateBalance(this.player.getBalance())
     }

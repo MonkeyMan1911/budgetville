@@ -7,7 +7,7 @@ import { BankInterior } from "./scenes/BankInterior";
 import { stockMarket } from "./systems/StockMarket";
 import { gameStockMarketUi } from "./UI/StockMarketUI";
 
-const game = new Engine({
+export const game = new Engine({
 	canvasElementId: "game",
 	width: 800, 
 	height: 600,

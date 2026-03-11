@@ -4,6 +4,7 @@ import { AnimationManager } from "../Animations/AnimationManager";
 import { calculateDistance } from "../utils/calculateDistance";
 import { GameScene } from "../scenes/GameScene";
 import { ChoiceBoxConfig } from "../UI/ChoiceBox";
+import Mission from "../systems/Mission";
 
 export interface TalkingEvent {
     type: "textMessage",
@@ -32,7 +33,12 @@ export interface TransactionEvent {
     amount: number,
 }
 
-export type EventObj = TalkingEvent | WalkingEvent | AddFlagEvent | RemoveFlagEvent | TransactionEvent
+export interface AssignMissionEvent {
+    type: "assignMission",
+    mission: Mission
+}
+
+export type EventObj = TalkingEvent | WalkingEvent | AddFlagEvent | RemoveFlagEvent | TransactionEvent | AssignMissionEvent
 
 export interface NPCTalking {
     requiredFlags: string[],

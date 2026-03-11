@@ -1,4 +1,4 @@
-import { NPCTalking, TalkingEvent, WalkingEvent, AddFlagEvent, RemoveFlagEvent, TransactionEvent } from "./objects/NPC";
+import { NPCTalking, TalkingEvent, WalkingEvent, AddFlagEvent, RemoveFlagEvent, TransactionEvent, AssignMissionEvent } from "./objects/NPC";
 import { Directions, Player } from "./objects/player";
 import { gameTextBox } from "./UI/Textbox";
 import { GameScene } from "./scenes/GameScene";
@@ -58,8 +58,11 @@ export class Cutscene {
         }
         else if (eventObj?.type === "removeFlag") {
             this.handleRemoveFlag(eventObj as RemoveFlagEvent);
-            this.currentEventIndex += 1;
-            
+        }
+        else if (eventObj?.type === "assignMission") {
+            this.handleAssignMission(eventObj as AssignMissionEvent)
+            this.currentEventIndex += 1
+
             if (this.currentEventIndex <= this.numEventIndexes) {
                 this.continueToNextEvent();
             }
@@ -79,6 +82,17 @@ export class Cutscene {
                 }
             }
         }
+    
+    }
+
+    private handleAssignMission(eventObj: AssignMissionEvent) {
+        this.playerRef!.assignMission(eventObj.mission)
+        
+        const desc = eventObj.mission.getDescription()
+        gameTextBox.clear();
+        gameTextBox.addText(`New Mission: ${desc}`);
+        gameTextBox.show();
+        // Don't increment here — let Enter key handling advance the cutscene
     }
 
     private handleTransaction(eventObj: TransactionEvent) {

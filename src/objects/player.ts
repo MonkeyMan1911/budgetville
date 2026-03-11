@@ -12,6 +12,8 @@ import { calculateDistance } from "../utils/calculateDistance";
 import { PortfolioStockDetails, StockNames, StockPurchaseDetails } from "../systems/StockMarket";
 import { joystick } from "./Joystick";
 import { actionButton } from "./ActionButton";
+import Mission from "../systems/Mission";
+import { pauseBtn } from "../UI/PauseButton";
 
 export enum Directions {
 	Up = "up",
@@ -165,6 +167,34 @@ export class Player extends Actor {
 	private walkCompleteCallback: (() => void) | null = null;
 
 	private happinessLevel = 100
+
+	private missionsArray: Mission[] = []
+	private currentMission: Mission | null = null
+	public getCurrentMission(): Mission | null {
+    	return this.currentMission
+	}
+	public getMissionsArray(): Mission[] {
+		return this.missionsArray;
+	}
+	public assignMission(mission: Mission) {
+		this.currentMission = mission
+		this.missionsArray.push(mission)
+	}
+	public removeMission() {
+		this.missionsArray.splice(this.missionsArray.indexOf(this.currentMission!))
+		this.currentMission = null
+	}
+	public untrackMission() {
+		this.currentMission = null
+	}
+	public trackMission(missionName: string) {
+		for (let mission of this.missionsArray) {
+			if (mission.getName() === missionName) {
+				this.currentMission = mission
+				break
+			}
+		}
+	}
 
 	constructor(keysArray: UIKey[]) {
 		super({
@@ -365,7 +395,7 @@ export class Player extends Actor {
 		this.moveDir = moveDir.normalize().scale(this.speed);
 	}
 
-	override onPreUpdate(engine: Engine, elapsedMs: number): void {
+	override onPreUpdate(engine: Engine, elapsedMs: number): void {		
 		// Handle cutscene walking
 		if (!this.targetPos.equals(ex.Vector.Zero)) {
 			let reachedTarget = false;
@@ -420,6 +450,20 @@ export class Player extends Actor {
 			this.movementLogic(engine);
 		}
 
+		// Mission handling
+		if (this.currentMission !== null) {
+			if (this.currentMission.getType() === "travel") {
+				if (this.currentMission.checkFinished(this.pos)) { 
+					this.removeMission() 
+
+				}
+			}
+			else {
+				if (this.currentMission.checkFinished()) { this.removeMission() }
+			}
+		}
+
+		// Collisions
 		if (this.collidingWithDoor) {
 			this.enterLogic(engine, "door");
 		}

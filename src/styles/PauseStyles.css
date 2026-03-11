@@ -1,0 +1,200 @@
+/* Pause button */
+#pause-btn {
+    position: absolute;
+    top: 5%;
+    left: 3%;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    background: none;        /* remove default button background */
+    line-height: 0;          /* kills the inline gap below the image */
+}
+#pause-btn-img {
+    image-rendering: pixelated;
+    display: block;          /* eliminates the inline whitespace gap */
+    width: 300%;
+}
+
+/* Pause menu root */
+#pause-menu {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 95%;
+    height: 92%;
+    z-index: 9999;
+
+    background-color: rgb(238, 200, 170);
+    border-radius: 10px;
+    border: 4px solid rgb(68, 53, 32);
+    padding: 1%;
+}
+#pause-menu-tabs {
+    position: absolute;
+    left: 50%;
+    top: 3%;
+    transform: translateX(-50%);
+
+    width: 95%;
+    height: 7%;    
+
+    background-color: rgb(238, 200, 170);
+    border-radius: 5px;
+    border: 3px solid rgb(68, 53, 32);
+
+    font-size: 0;
+}
+#pause-menu-tabs button {
+    height: 100%;
+    width: 20%;
+
+    border: none;
+    background-color: transparent;
+    padding: 0;
+
+    font-size: 35px;
+    font-family: "PixelFont", sans-serif;
+
+    border-right: 3px solid rgb(68, 53, 32);
+
+    cursor: pointer;
+
+}
+#pause-menu-tabs button.tab-unselected {
+    background-color: transparent;
+}
+#pause-menu-tabs button.tab-unselected:hover {
+    background-color: rgb(208, 174, 148);
+}
+#pause-menu-tabs button.tab-selected {
+    background-color: rgb(68, 53, 32);
+    color: white;
+}
+
+/* Missions section of pause menu */
+#mission-tab-ui {
+    position: absolute;
+    top: 13%;
+    left: 0;
+    width: 100%;
+    height: 87%;
+}
+
+#missions-sidebar {
+    position: absolute;
+    left: 2.5%;
+    width: 30%;
+    height: 95%;
+    
+    border-radius: 5px;
+    border: 3px solid rgb(68, 53, 32)
+}
+#missions-sidebar button {
+    width: 100%;
+    height: 12%;
+
+    border: none;
+    background-color: transparent;
+    padding: 0;
+
+    font-size: 30px;
+    font-family: "PixelFont", sans-serif;
+
+    border-bottom: 3px solid rgb(68, 53, 32);
+
+    cursor: pointer;
+}
+#missions-sidebar button.mission-selected {
+    background-color: rgb(68, 53, 32);
+    color: white;
+}
+#missions-sidebar button.mission-unselected {
+    background-color: transparent;
+}
+#missions-sidebar button.mission-unselected:hover {
+    background-color: rgb(208, 174, 148);
+}
+
+#mission-info {
+    position: absolute;
+    left: 36%;
+    width: 61.3%;
+    height: 55%;
+    
+    border-radius: 5px;
+    border: 3px solid rgb(68, 53, 32)
+}
+#mission-info-name {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 33px;
+    font-family: "PixelFont", sans-serif;   
+}
+#mission-info-desc {
+    position: absolute;
+    left: 50%;
+    top: 25%;
+    transform: translateX(-50%);
+
+    width: 80%;
+
+    font-size: 27px;
+    font-family: "PixelFont", sans-serif;   
+    text-align: center;
+}
+#mission-info-objs {
+    position: absolute;
+    left: 50%;
+    top: 47%;
+    transform: translateX(-50%);
+
+    width: 80%;
+
+    font-size: 30px;
+    font-family: "PixelFont", sans-serif;   
+    text-align: center;
+}
+
+#mission-actions {
+    position: absolute;
+    top: 60%;
+    left: 36%;
+    width: 61.3%;
+    height: 35%;
+    
+    border-radius: 5px;
+    border: 3px solid rgb(68, 53, 32);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+#mission-actions button {
+    width: 40%;
+    height: 60%;
+
+    border: 5px solid rgb(68, 53, 32);
+    border-radius: 5px;
+
+    background-color: transparent;
+
+    font-size: 30px;
+    font-family: "PixelFont", sans-serif;   
+    text-align: center;
+
+    cursor: pointer;
+}
+#mission-actions button:hover {
+    background-color: rgb(208, 174, 148);
+}
+#mission-actions button:disabled {
+    border: 5px solid rgba(16, 16, 16, 0.459);
+    cursor: default;
+}
+#mission-actions button:disabled:hover {
+    background-color: transparent;
+}

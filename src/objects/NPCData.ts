@@ -4,11 +4,52 @@ import * as ex from "excalibur"
 import { Directions } from "./player";
 import { GameScene } from "../scenes/GameScene";
 import { calculateDistance } from "../utils/calculateDistance";
+import Mission from "../systems/Mission";
 
 export function createNPCData(gameScene: GameScene) {
     return {
         World: {
             NPCs: [
+                new NPC({
+                    name: "George",
+                    pos: ex.vec(calculateDistance(28), calculateDistance(15)),
+                    spriteSheet: SpriteSheetRes.TestBanker,
+                    gameScene: gameScene,
+                    talking: [
+                        {
+                            requiredFlags: [],
+                            events: [
+                                {type: "textMessage", text: "Hello! Watch me walk!", direction: "mainChar"},
+                                {
+                                    type: "assignMission", 
+                                    mission: new Mission({
+                                        type: "collectFlag",
+                                        value: "testMissionFlag",
+                                        name: "Test Mission",
+                                        description: "Test Mission desc"
+                                    }) 
+                                }
+                            ]
+                        }
+                    ]
+                }),
+
+                new NPC({
+                    name: "George2",
+                    pos: ex.vec(calculateDistance(25), calculateDistance(15)),
+                    spriteSheet: SpriteSheetRes.TestBanker,
+                    gameScene: gameScene,
+                    talking: [
+                        {
+                            requiredFlags: [],
+                            events: [
+                                {type: "addFlag", flag: "testMissionFlag", value: true},
+                                {type: "textMessage", text: "All done!", direction: "mainChar"},
+                            ]
+                        }
+                    ]
+                }),
+
                 new NPC({
                     name: "TestNpc",
                     pos: ex.vec(100, 100),

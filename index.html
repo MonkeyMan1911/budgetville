@@ -9,6 +9,7 @@
 		<link rel="stylesheet" href="./src/styles/Balance.css">
 		<link rel="stylesheet" href="./src/styles/ChoiceBtnStyles.css">
 		<link rel="stylesheet" href="./src/styles/StockMarketStyles.css">
+		<link rel="stylesheet" href="./src/styles/PauseStyles.css">
 
 		<title>Budgetville</title>
 	</head>
@@ -21,6 +22,25 @@
 				<button id="choice-3" class="choice-btn hide"></button>
 				<button id="choice-4" class="choice-btn hide"></button>
 			</div>	
+			<button id="pause-btn" class="hide">
+				<img id="pause-btn-img" src="./UI Images/PauseBtn.png">
+			</button>
+
+			<div id="pause-menu" class="hide">
+
+				<div id="pause-menu-tabs">
+					<button id="settings-tab" class="tab-unselected">Settings</button>
+					<button id="mission-tab" class="tab-selected">Missions</button>
+				</div>
+
+				<div id="mission-tab-ui">
+					<div id="missions-sidebar"></div>
+					<div id="mission-info"></div>
+					<div id="mission-actions"></div>
+				</div>
+
+			</div>
+
 			<div id="balance-hud" class="hide">
 				<img id="balance-img" src="./UI Images/BalanceHUD.png">
 			</div>
