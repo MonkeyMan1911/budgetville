@@ -7,7 +7,7 @@ export default class Mission {
     private details: MissionDetails;
 
     constructor(details: MissionDetails) {
-        this.name =      details.name
+        this.name = details.name
         this.details = details
     }   
 

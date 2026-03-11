@@ -32,7 +32,6 @@ export interface TransactionEvent {
     type: "transaction",
     amount: number,
 }
-
 export interface AssignMissionEvent {
     type: "assignMission",
     mission: Mission
