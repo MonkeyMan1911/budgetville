@@ -16,8 +16,8 @@ export class BankInterior extends GameScene {
     async onActivate(context: SceneActivationContext<{player: Player}>): Promise<void> {
         if (this.npcs.length === 0) {
             const data = createNPCData(this)
-            this.npcs = data.World.NPCs
-            this.triggerZones = data.World.TriggerZones
+            this.npcs = data.Bank.NPCs
+            this.triggerZones = data.Bank.TriggerZones
         }
 
         await super.onActivate(context);

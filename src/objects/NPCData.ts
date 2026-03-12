@@ -3,9 +3,11 @@ import { NPC } from "./NPC";
 import * as ex from "excalibur"
 import { Directions } from "./player";
 import { GameScene } from "../scenes/GameScene";
-import { calculateDistance } from "../utils/calculateDistance";
+import { calculatePosition } from "../utils/calculateDistance";
 import Mission from "../systems/Mission";
 import { TriggerZone } from "./TriggerZone";
+
+// TODO: Map out some actual testing missions for both collectFlag and travelling
 
 export function createNPCData(gameScene: GameScene) {
     return {
@@ -13,7 +15,7 @@ export function createNPCData(gameScene: GameScene) {
             NPCs: [
                 new NPC({
                     name: "George",
-                    pos: ex.vec(calculateDistance(28), calculateDistance(15)),
+                    pos: calculatePosition(28, 15),
                     spriteSheet: SpriteSheetRes.TestBanker,
                     gameScene: gameScene,
                     talking: [
@@ -37,7 +39,7 @@ export function createNPCData(gameScene: GameScene) {
 
                 new NPC({
                     name: "George2",
-                    pos: ex.vec(calculateDistance(25), calculateDistance(15)),
+                    pos: calculatePosition(25, 15),
                     spriteSheet: SpriteSheetRes.TestBanker,
                     gameScene: gameScene,
                     talking: [
@@ -104,7 +106,7 @@ export function createNPCData(gameScene: GameScene) {
             ],
             TriggerZones: [
                 new TriggerZone({
-                    pos: ex.vec(calculateDistance(25), calculateDistance(18)),
+                    pos: calculatePosition(25, 18),
                     width: 32,
                     height: 32,
                     missionName: "Test Mission",   // matches Mission name exactly
@@ -121,7 +123,7 @@ export function createNPCData(gameScene: GameScene) {
             NPCs: [ 
                 new NPC({
                     name: "Bank Manager",
-                    pos: ex.vec(calculateDistance(24.5), calculateDistance(2.8)),
+                    pos: calculatePosition(24, 2.8),
                     spriteSheet: SpriteSheetRes.BankManager,
                     gameScene: gameScene,
                     talking: [],

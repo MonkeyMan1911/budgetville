@@ -8,12 +8,11 @@ import { NPC } from "./NPC";
 import { gameTextBox } from "../UI/Textbox";
 import { Cutscene } from "../Cutscene";
 import { WalkingEvent } from "./NPC";
-import { calculateDistance } from "../utils/calculateDistance";
+import { calculateYDistance, calculatePosition } from "../utils/calculateDistance";
 import { PortfolioStockDetails, StockNames, StockPurchaseDetails } from "../systems/StockMarket";
 import { joystick } from "./Joystick";
 import { actionButton } from "./ActionButton";
 import Mission from "../systems/Mission";
-import { pauseBtn } from "../UI/PauseButton";
 
 export enum Directions {
 	Up = "up",
@@ -199,7 +198,7 @@ export class Player extends Actor {
 	constructor(keysArray: UIKey[]) {
 		super({
 			name: 'Player',
-			pos: vec(calculateDistance(33), calculateDistance(15)),
+			pos: calculatePosition(33, 15),
 			width: 16,
 			height: 16,
 			collisionType: CollisionType.Active,
@@ -376,7 +375,7 @@ export class Player extends Actor {
 
 	// Method for cutscene to tell player to walk
 	walkForCutscene(walkEvent: WalkingEvent, onComplete: () => void) {
-		const amountToWalk = calculateDistance(walkEvent.tiles);
+		const amountToWalk = calculateYDistance(walkEvent.tiles);
 		this.direction = walkEvent.direction;
 		this.walkCompleteCallback = onComplete;
 		 

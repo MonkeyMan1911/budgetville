@@ -1,7 +1,7 @@
 import * as ex from "excalibur"
 import { Directions, MovementStates } from "./player";
 import { AnimationManager } from "../Animations/AnimationManager";
-import { calculateDistance } from "../utils/calculateDistance";
+import { calculateYDistance } from "../utils/calculateDistance";
 import { GameScene } from "../scenes/GameScene";
 import { ChoiceBoxConfig } from "../UI/ChoiceBox";
 import Mission from "../systems/Mission";
@@ -138,7 +138,7 @@ export class NPC extends ex.Actor {
 
     // Method for cutscene to tell NPC to walk
     walkForCutscene(walkEvent: WalkingEvent, onComplete: () => void) {
-        const amountToWalk = calculateDistance(walkEvent.tiles);
+        const amountToWalk = calculateYDistance(walkEvent.tiles);
         this.direction = walkEvent.direction;
         this.walkCompleteCallback = onComplete;
          
